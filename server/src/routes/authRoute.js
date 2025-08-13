@@ -1,7 +1,26 @@
 import express from 'express'
-import { login, logout, signup } from '../controllers/authControllers.js'
+import { login, logout, sendToken, signup } from '../controllers/authControllers.js'
+import passport from 'passport';
 
 const authRoute = express.Router()
+
+authRoute.get(
+  '/google',
+  passport.authenticate('google', {
+    session: false,
+    scope: ['profile', 'email'],
+    prompt: 'select_account consent',
+  })
+);
+
+authRoute.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: process.env.CLIENT_URL }),
+  (req, res) => {
+    // Send JWT token after successful login
+    sendToken(req.user, res);
+  }
+);
 
 authRoute.post('/signup', signup)
 authRoute.post('/login', login)

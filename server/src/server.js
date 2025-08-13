@@ -4,6 +4,8 @@ import connectDb from "./config/connectDB.js";
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import authRoute from "./routes/authRoute.js";
+import passport from "passport";
+import './config/passport.js';
 
 
 const app = express();
@@ -18,6 +20,8 @@ app.use(cors({
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
+app.use(passport.initialize());
+
 
 app.use('/api/auth', authRoute)
 
