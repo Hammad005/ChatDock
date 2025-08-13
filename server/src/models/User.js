@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
+    googleId:{
+      type: String,
+      unique: true,
+      sparse: true // to allow null value
+    },
     fullName: {
         type: String,
         required: true
@@ -13,6 +18,7 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
+        minlength: [6, "Password must be at least 6 characters"],
     },
     profilePic: {
         imageId: {
