@@ -1,3 +1,4 @@
+import cloudinary from "../lib/cloudinary.js";
 import User from "../models/User.js"
 import jwt from "jsonwebtoken"
 
@@ -98,7 +99,7 @@ export const sendToken = (user, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
         expiresIn: "5d",
     });
-    
+
     res.cookie("ChatDockAuth", token, {
         maxAge: 5 * 24 * 60 * 60 * 1000, // 5 days
         httpOnly: true,
@@ -107,4 +108,62 @@ export const sendToken = (user, res) => {
     })
         .status(200)
         .redirect(process.env.CLIENT_URL);
+};
+
+export const updateProfile = async (req, res) => {
+    const { fullName, profilePic } = req.body
+    try {
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        let updatedUser;
+
+        if (profilePic) {
+            if (user?.profilePic?.imageId) {
+                await cloudinary.uploader.destroy(user.profilePic.imageId);
+            }
+
+            const cloudinaryResponse = await cloudinary.uploader.upload(profilePic, {
+                folder: "ChatDock/profilePics",
+            });
+            if (!cloudinaryResponse || cloudinaryResponse.error) {
+                throw new Error(cloudinaryResponse.error || "Unknown Cloudinary Error");
+            }
+
+            updatedUser = await User.findByIdAndUpdate(
+                req.user._id,
+                {
+                    fullName,
+                    profilePic: {
+                        imageId: cloudinaryResponse.public_id,
+                        imageUrl: cloudinaryResponse.secure_url,
+                        isUpdated: true
+                    },
+                },
+                { new: true }
+            );
+        } else {
+            updatedUser = await User.findByIdAndUpdate(
+                req.user._id,
+                {
+                    fullName,
+                },
+                { new: true }
+            );
+        }
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found after update" });
+        }
+
+        const userWithoutPassword = { ...updatedUser._doc };
+        delete userWithoutPassword.password;
+
+        return res.status(200).json({ user: userWithoutPassword });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: error.message || "Internal Server Error" });
+    }
 };

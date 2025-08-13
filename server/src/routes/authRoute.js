@@ -1,6 +1,7 @@
 import express from 'express'
 import { login, logout, sendToken, signup } from '../controllers/authControllers.js'
 import passport from 'passport';
+import { protectRoute } from '../middleware/protectRoute.js';
 
 const authRoute = express.Router()
 
@@ -25,6 +26,7 @@ authRoute.get(
 authRoute.post('/signup', signup)
 authRoute.post('/login', login)
 authRoute.post('/logut', logout)
+authRoute.put('/update', protectRoute, updateProfile)
 
 
 export default authRoute
