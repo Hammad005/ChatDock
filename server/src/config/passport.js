@@ -16,16 +16,16 @@ passport.use(
 
         if (existingUser) {
           // Ensure profile field is always available
-          if (existingUser.profile?.updated) {
+          if (existingUser.profilePic?.isUpdated) {
             // Case 1: Profile is marked as updated, don't overwrite image
             existingUser.email = profile.emails[0].value;
           } else {
             // Case 2: Profile not updated, update everything including image
             existingUser.email = profile.emails[0].value;
-            existingUser.profile = {
+            existingUser.profilePic = {
               imageId: null,
               imageUrl: profile.photos[0].value,
-              updated: false, 
+              isUpdated: false, 
             };
           }
 
@@ -38,10 +38,10 @@ passport.use(
           googleId: profile.id,
           fullName: profile.displayName,
           email: profile.emails[0].value,
-          profile: {
+          profilePic: {
             imageId: null,
             imageUrl: profile.photos[0].value,
-            updated: false,
+            isUpdated: false,
           },
         });
 

@@ -2,38 +2,49 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
-    googleId:{
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true // to allow null value
+  },
+  fullName: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  about: {
+    type: String,
+    default: null
+  },
+  password: {
+    type: String,
+    minlength: [6, "Password must be at least 6 characters"],
+  },
+  profilePic: {
+    imageId: {
       type: String,
-      unique: true,
-      sparse: true // to allow null value
+      default: null
     },
-    fullName: {
-        type: String,
-        required: true
+    imageUrl: {
+      type: String,
+      default: null
     },
-    email: {
-        type: String,
-        required: true,
-        unique: true
+    isUpdated: {
+      type: Boolean,
+      default: false
     },
-    password: {
-        type: String,
-        minlength: [6, "Password must be at least 6 characters"],
-    },
-    profilePic: {
-        imageId: {
-            type: String,
-            default: null
-        },
-        imageUrl: {
-            type: String,
-            default: null
-        },
-        isUpdated: {
-            type: Boolean,
-            default: false
-        },
+  },
+  friends: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: []
     }
+  ]
 }, { timestamps: true });
 
 userSchema.pre("save", async function (next) {

@@ -6,6 +6,7 @@ import cors from 'cors';
 import authRoute from "./routes/authRoute.js";
 import passport from "passport";
 import './config/passport.js';
+import requestsRoute from "./routes/requestsRoute.js";
 
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(passport.initialize());
 
 
 app.use('/api/auth', authRoute)
+app.use('/api/requests', requestsRoute)
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
