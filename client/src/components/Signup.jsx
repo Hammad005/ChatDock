@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Signup = () => {
+const Signup = ({setActive}) => {
     const handleLogin = () => {
     window.open(`${import.meta.env.VITE_API_URL}/api/auth/google`, "_self");
   }
