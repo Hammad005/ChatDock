@@ -7,6 +7,7 @@ import authRoute from "./routes/authRoute.js";
 import passport from "passport";
 import './config/passport.js';
 import requestsRoute from "./routes/requestsRoute.js";
+import messagesRoute from "./routes/messagesRoute.js";
 
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(passport.initialize());
 
 app.use('/api/auth', authRoute)
 app.use('/api/requests', requestsRoute)
+app.use('/api/messages', messagesRoute)
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
