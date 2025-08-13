@@ -1,4 +1,6 @@
 import React from 'react'
+import ModeToggle from './components/ModeToggle';
+import { Button } from './components/ui/button';
 
 const App = () => {
 
@@ -7,9 +9,10 @@ const App = () => {
   }
   return (
     <>
-    <button onClick={handleLogin}>
+    <Button onClick={handleLogin}>
       Login
-    </button>
+    </Button>
+    <ModeToggle/>
     </>
   )
 }
