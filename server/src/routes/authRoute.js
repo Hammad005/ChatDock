@@ -25,7 +25,7 @@ authRoute.get(
 
 authRoute.post('/signup', signup)
 authRoute.post('/login', login)
-authRoute.post('/logut', logout)
+authRoute.post('/logout', logout)
 authRoute.put('/update', protectRoute, updateProfile)
 
 authRoute.get('/me', protectRoute, (req, res) => res.status(200).json({user: req.user}));

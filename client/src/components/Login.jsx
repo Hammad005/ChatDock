@@ -60,11 +60,7 @@ const Login = ({ setActive }) => {
           </div>
         </div>
 
-        <Button
-        type="submit"
-          className={"w-full"}
-          disabled={userLoading}
-        >
+        <Button type="submit" className={"w-full"} disabled={userLoading}>
           {userLoading ? <Loader2 className="animate-spin" /> : "Login"}
         </Button>
       </form>

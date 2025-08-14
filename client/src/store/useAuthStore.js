@@ -23,7 +23,7 @@ export const useAuthStore = create((set) => ({
         await delay(1500);
         try {
             const res = await axios.get('/auth/me');
-            set({ user: res.data, authLoading: false });
+            set({ user: res.data.user, authLoading: false });
         } catch (error) {
             console.log(error);
             set({ authLoading: false });
@@ -33,7 +33,7 @@ export const useAuthStore = create((set) => ({
         set({userLoading: true});
         try {
             const res = await axios.post('/auth/signup', data);
-            set({user: res.data, userLoading: false});
+            set({user: res.data.user, userLoading: false});
             toast.success('Signup successful');
         } catch (error) {
             console.log(error);
@@ -45,7 +45,7 @@ export const useAuthStore = create((set) => ({
         set({userLoading: true});
         try {
             const res = await axios.post('/auth/login', data);
-            set({user: res.data, userLoading: false});
+            set({user: res.data.user, userLoading: false});
             toast.success('Login successful');
         } catch (error) {
             console.log(error);
