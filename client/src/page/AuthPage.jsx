@@ -31,8 +31,8 @@ const AuthPage = () => {
             )}
           </div>
         </div>
-        <div className="w-full bg-primary/10 backdrop-blur-md h-screen lg:flex flex-col items-center justify-center hidden">
-        <img src={AuthPhoto} alt="auth" className="w-auto h-[500px]" />
+        <div className="w-full bg-primary/10 backdrop-blur-md h-screen lg:flex flex-col gap-2 items-center justify-center hidden">
+        <img src={AuthPhoto} alt="auth" className="w-auto h-[400px]" />
         <p className="text-xs text-muted-foreground">"Log in to keep the conversation going, or sign up to start your first chat today."</p>
         </div>
       </div>

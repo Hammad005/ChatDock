@@ -15,7 +15,7 @@ const MinSidebar = ({ active, setActive }) => {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-between py-5 gap-4 h-full">
+      <div className="flex flex-col items-center justify-between py-3 gap-4 h-full">
         <div className="flex flex-col items-center gap-4">
           <img src={Logo} alt="loading" className="w-auto h-[40px]" />
           <Tooltip>
