@@ -4,6 +4,7 @@ import Home from './page/Home'
 import AuthPage from './page/AuthPage'
 import { useAuthStore } from './store/useAuthStore'
 import Loading from './components/Loading'
+import { Toaster } from "@/components/ui/sonner"
 
 const protectRoutes = (condition, children, naivagate) => {
   return condition ? children : <Navigate to={naivagate} />
@@ -22,6 +23,7 @@ const App = () => {
       <Route path='/' element={protectRoutes(user, <Home/>, '/login')}/>
       <Route path='/login' element={protectRoutes(!user, <AuthPage/>, '/')}/>
     </Routes>
+    <Toaster position="top-center"/>
     </>
   )
 }

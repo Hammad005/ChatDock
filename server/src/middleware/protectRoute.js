@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 export const protectRoute = async (req, res, next) => {
@@ -8,12 +9,12 @@ export const protectRoute = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         try {
-            const User = await User.findById(decoded.id).select("-password")
-            if (!User) {
+            const user = await User.findById(decoded.id).select("-password")
+            if (!user) {
                 return res.status(401).json({ error: "Unauthorized, Please login" });
             }
 
-            req.user = User
+            req.user = user
             next()
         } catch (error) {
             if (error.name === "TokenExpiredError") {

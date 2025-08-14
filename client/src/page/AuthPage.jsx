@@ -10,7 +10,7 @@ const AuthPage = () => {
     <>
       <div className="flex items-center justify-between min-h-screen">
         <div className="flex items-center justify-center w-full">
-          <div className="lg:w-1/2 flex flex-col justify-center items-start">
+          <div className="lg:w-1/2 w-full lg:px-0 px-12 flex flex-col justify-center items-start">
             <div className="flex items-center justify-center gap-2">
               <div className="w-[40px] h-auto object-contain">
                 <img
