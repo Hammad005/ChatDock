@@ -170,7 +170,10 @@ export const updateProfile = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find().select("-password");
+        const excludeIds = [req.user._id, ...req.user.friends];
+        const users = await User.find({
+            _id: { $nin: excludeIds },
+        }).select("-password");
         res.status(200).json({ users });
     } catch (error) {
         console.log(error);
