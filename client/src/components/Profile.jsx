@@ -9,10 +9,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import ImageOverlay from "./ImageOverlay";
+import { useImageOverlay } from "@/store/ImageOverlayContext";
 
 const Profile = () => {
   const { user } = useAuthStore();
   const [overlayActive, setOverlayActive] = useState(false);
+    const { setIsOverlayOpen, setImageData } = useImageOverlay();
+  
   return (
     <>
       <div className="flex flex-col items-center gap-4 mt-10">
@@ -52,7 +56,13 @@ const Profile = () => {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem>
+            <DropdownMenuItem disabled={!user?.profilePic?.imageUrl} onClick={() => {
+              setIsOverlayOpen(true);
+              setImageData({
+                name: user?.fullName,
+                image: user?.profilePic?.imageUrl
+              });
+            }}>
               <Eye /> View photo
             </DropdownMenuItem>
             <DropdownMenuItem>
