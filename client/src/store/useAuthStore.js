@@ -64,5 +64,19 @@ export const useAuthStore = create((set) => ({
             toast.error(error.response.data.error);
             set({userLoading: false, user: null});
         }
+    },
+    update: async (data) => {
+        set({updateUserLoading: true});
+        try {
+            const res = await axios.put('/auth/update', data);
+            set({user: res.data.user, updateUserLoading: false});
+            toast.success('Update successful');
+
+            return {success: true}
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response.data.error);
+            set({updateUserLoading: false, user: null});
+        }
     }
 }));

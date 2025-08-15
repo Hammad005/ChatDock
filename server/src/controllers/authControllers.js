@@ -111,7 +111,7 @@ export const sendToken = (user, res) => {
 };
 
 export const updateProfile = async (req, res) => {
-    const { fullName, profilePic } = req.body
+    const { fullName, about, profilePic } = req.body
     try {
         const user = await User.findById(req.user._id);
         if (!user) {
@@ -136,6 +136,7 @@ export const updateProfile = async (req, res) => {
                 req.user._id,
                 {
                     fullName,
+                    about,
                     profilePic: {
                         imageId: cloudinaryResponse.public_id,
                         imageUrl: cloudinaryResponse.secure_url,
@@ -149,6 +150,7 @@ export const updateProfile = async (req, res) => {
                 req.user._id,
                 {
                     fullName,
+                    about
                 },
                 { new: true }
             );
