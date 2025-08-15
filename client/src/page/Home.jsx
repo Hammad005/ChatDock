@@ -18,12 +18,12 @@ const Home = () => {
             <div className="col-span-10 p-3 flex flex-col h-screen gap-4">
               <h3 className="text-3xl font-bold tracking-wider flex flex-col">
                 ChatDock
-                <span className="text-xs text-primary font-normal">
+                <span className="text-xs text-muted-foreground tracking-normal ">
                   {active}
                 </span>
               </h3>
 
-              <div className="h-full overflow-auto">
+              <div className="h-full overflow-y-auto overflow-x-hidden">
                 {active === "Profile" && <Profile />}
               </div>
             </div>
