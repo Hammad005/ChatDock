@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useImageOverlay } from "@/store/ImageOverlayContext";
+import { useImageOverlay } from "@/context/ImageOverlayContext";
 import RemoveProfile from "./RemoveProfile";
 
 const Profile = () => {

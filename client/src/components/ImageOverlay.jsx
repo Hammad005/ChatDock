@@ -1,4 +1,4 @@
-import { useImageOverlay } from "@/store/ImageOverlayContext";
+import { useImageOverlay } from "@/context/ImageOverlayContext";
 import React from "react";
 import { Button } from "./ui/button";
 import { X } from "lucide-react";

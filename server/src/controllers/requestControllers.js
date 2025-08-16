@@ -18,9 +18,13 @@ export const getMyRequests = async (req, res) => {
 export const sendRequest = async (req, res) => {
     const { id } = req.params;
     try {
+        const exists = await Request.findOne({ requestSender: req.user._id, requestReceiver: id });
+        if (exists) {
+            return res.status(400).json({ error: "You have already sent a request to this user" });
+        };
         const request = await Request.create({ requestSender: req.user._id, requestReceiver: id });
         res.status(200).json({
-            sentRequests: request
+            request
         });
     } catch (error) {
         console.log(error);
@@ -64,12 +68,7 @@ export const acceptRequest = async (req, res) => {
 export const rejectRequest = async (req, res) => {
     const { id } = req.params;
     try {
-        const requests = await Request.findById(id);
-        if (req.user._id.toString() !== requests.requestReceiver.toString()) {
-            return res.status(401).json({ error: "Unauthorized, You can't reject this request" });
-        }
-
-        await requests.remove();
+         await Request.findByIdAndDelete(id);
         const receivedRequests = await Request.find({ requestReceiver: req.user._id });
         const sentRequests = await Request.find({ requestSender: req.user._id });
 
