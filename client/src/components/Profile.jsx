@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useImageOverlay } from "@/store/ImageOverlayContext";
+import RemoveProfile from "./RemoveProfile";
 
 const Profile = () => {
   const { user, updateUserLoading, update } = useAuthStore();
@@ -35,6 +36,8 @@ const Profile = () => {
   const [uploadingImage, setUploadingImage] = useState(false);
 
   const uploadRef = useRef(false);
+
+  const [open, setOpen] = useState(false)
 
   const handleUpdate = async () => {
     const res = await update(data);
@@ -62,6 +65,7 @@ const Profile = () => {
   };
   return (
     <>
+    <RemoveProfile open={open} setOpen={setOpen} />
       <div className="flex flex-col items-center w-full gap-4 mt-10">
         <DropdownMenu onOpenChange={(open) => setOverlayActive(open)}>
           <DropdownMenuTrigger asChild disabled={updateUserLoading}>
@@ -80,30 +84,32 @@ const Profile = () => {
                   </p>
                 )}
 
-                {uploadingImage &&
+                {uploadingImage && (
                   <div
                     className={`absolute inset-0 size-[130px] rounded-full flex flex-col items-center justify-center 
                     bg-black/60 backdrop-blur`}
                   >
                     <Loader2 className="animate-spin text-white" />
                   </div>
-                }
+                )}
 
                 {/* Overlay */}
-                {!uploadingImage &&<div
-                  className={`absolute inset-0 size-[130px] rounded-full flex flex-col items-center justify-center gap-2
+                {!uploadingImage && (
+                  <div
+                    className={`absolute inset-0 size-[130px] rounded-full flex flex-col items-center justify-center gap-2
                     bg-black/60 backdrop-blur text-white opacity-0 
                     group-hover:opacity-100 ${
                       overlayActive && "opacity-100"
                     } transition-opacity duration-300`}
-                >
-                  <Image />
-                  <p className="text-center font-semibold text-xs w-1/2">
-                    {user?.profilePic?.imageUrl
-                      ? "Change Profile Photo"
-                      : "Add Profile Photo"}
-                  </p>
-                </div>}
+                  >
+                    <Image />
+                    <p className="text-center font-semibold text-xs w-1/2">
+                      {user?.profilePic?.imageUrl
+                        ? "Change Profile Photo"
+                        : "Add Profile Photo"}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </DropdownMenuTrigger>
@@ -124,7 +130,7 @@ const Profile = () => {
               <FolderOpen /> Uplaod photo
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
+            <DropdownMenuItem variant="destructive" onClick={() => setOpen(true)}>
               <Trash2 /> Remove photo
             </DropdownMenuItem>
           </DropdownMenuContent>

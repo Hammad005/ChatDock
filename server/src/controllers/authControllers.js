@@ -170,6 +170,43 @@ export const updateProfile = async (req, res) => {
     }
 };
 
+export const removeProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        if (user?.profilePic?.imageId) {
+            await cloudinary.uploader.destroy(user.profilePic.imageId);
+        }
+        
+        const updatedUser = await User.findByIdAndUpdate(
+                req.user._id,
+                {
+                    profilePic: {
+                        imageId: null,
+                        imageUrl: null,
+                        isUpdated: true
+                    },
+                },
+                { new: true }
+            );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: "User not found after update" });
+        }
+
+        const userWithoutPassword = { ...updatedUser._doc };
+        delete userWithoutPassword.password;
+
+        return res.status(200).json({ user: userWithoutPassword });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: error.message || "Internal Server Error" });
+    }
+};
+
 export const getAllUsers = async (req, res) => {
     try {
         const excludeIds = [req.user._id, ...req.user.friends];
