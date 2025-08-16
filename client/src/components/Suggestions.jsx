@@ -27,15 +27,7 @@ const Suggestions = () => {
   }, [allUsers]);
 
   const handleRequest = (id) => {
-    if (sendedRequests?.some((req) => req.requestReceiver.toString() === id)) {
-      rejectRequest(id);
-    } else if (
-      receivedRequests?.some((req) => req.requestSender.toString() === id)
-    ) {
-      //
-    } else {
-      sendRequest(id);
-    }
+    sendRequest(id);
   };
   return (
     <>
@@ -111,22 +103,36 @@ const Suggestions = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 w-full">
+                <div
+                  className={`grid ${
+                    receivedRequests?.some(
+                      (req) => req.requestSender.toString() === user._id
+                    ) && "grid-cols-2"
+                  } gap-2 w-full`}
+                >
                   {receivedRequests?.some(
                     (req) => req.requestSender.toString() === user._id
                   ) && (
                     <Button
                       variant={"outline"}
-                      className={'w-full'}
-                      onClick={() => handleRequest(user._id)}
+                      className={"w-full"}
+                      onClick={() => {
+                        const id = receivedRequests.find(
+                          (req) => req.requestSender.toString() === user._id
+                        )?._id;
+                        rejectRequest(id);
+                      }}
                     >
-                      Reject Request
+                      {requestsLoading ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Reject Request"
+                      )}
                     </Button>
-                  )
-                  }
+                  )}
                   <Button
                     disabled={requestsLoading}
-                    className={'w-full'}
+                    className={"w-full"}
                     variant={
                       sendedRequests?.some(
                         (req) => req.requestReceiver.toString() === user._id
@@ -139,7 +145,6 @@ const Suggestions = () => {
                         : "default"
                     }
                     onClick={() => {
-                      let requestIdOrUserId;
 
                       if (
                         sendedRequests?.some(
@@ -147,24 +152,27 @@ const Suggestions = () => {
                         )
                       ) {
                         // Cancel request → pass requestId
-                        requestIdOrUserId = sendedRequests.find(
-                          (req) => req.requestReceiver.toString() === user._id
-                        )?._id;
+                        return rejectRequest(
+                          sendedRequests.find(
+                            (req) => req.requestReceiver.toString() === user._id
+                          )?._id
+                        )
                       } else if (
                         receivedRequests?.some(
                           (req) => req.requestSender.toString() === user._id
                         )
                       ) {
                         // Accept request → you probably want to pass requestId here too
-                        requestIdOrUserId = receivedRequests.find(
+                        const id = receivedRequests.find(
                           (req) => req.requestSender.toString() === user._id
                         )?._id;
+                        console.log(id);
+                        
                       } else {
                         // Send request → pass userId
-                        requestIdOrUserId = user._id;
+                        handleRequest(user._id);
                       }
 
-                      handleRequest(requestIdOrUserId);
                     }}
                   >
                     {requestsLoading ? (
