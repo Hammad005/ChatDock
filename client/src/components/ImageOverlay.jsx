@@ -1,12 +1,10 @@
 import { useImageOverlay } from "@/store/ImageOverlayContext";
-import { useAuthStore } from "@/store/useAuthStore";
 import React from "react";
 import { Button } from "./ui/button";
 import { X } from "lucide-react";
 
 const ImageOverlay = () => {
   const { isOverlayOpen, setIsOverlayOpen, imageData } = useImageOverlay();
-  const { user } = useAuthStore();
 
   if (!isOverlayOpen) return null; // only show if context says so
   return (
@@ -21,9 +19,7 @@ const ImageOverlay = () => {
               />
             </div>
             <h3 className="text-base font-semibold">
-              {imageData.name === user?.fullName
-                ? "My Profile"
-                : imageData.name}
+              {imageData.name}
             </h3>
           </div>
 
@@ -33,11 +29,11 @@ const ImageOverlay = () => {
         </div>
       <div className="flex items-start mt-10 justify-center h-full">
 
-        <div className="md:w-[500px] w-[300px] h-auto object-contain">
+        <div className="md:w-full w-[350px] h-[500px] ">
           <img
             src={imageData.image}
             alt="image"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         </div>
       </div>

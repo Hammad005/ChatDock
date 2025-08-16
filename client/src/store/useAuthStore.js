@@ -95,7 +95,7 @@ export const useAuthStore = create((set) => ({
     getAllUsers: async () => {
         set({ userLoading: true });
         try {
-            const res = await axios.get('/auth/users');
+            const res = await axios.get('/auth/allUsers');
             set({ allUsers: res.data.users, userLoading: false });
         } catch (error) {
             console.log(error);

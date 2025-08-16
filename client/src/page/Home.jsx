@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import HomePhoto from "../assets/HomePhoto.png";
 import Logo from "../assets/logo.png";
 import Profile from "@/components/Profile";
+import Suggestions from "@/components/Suggestions";
 
 const Home = () => {
   const [active, setActive] = useState("Home");
@@ -24,6 +25,7 @@ const Home = () => {
               </h3>
 
               <div className="h-full overflow-y-auto overflow-x-hidden">
+                {active === "Home" && <Suggestions />}
                 {active === "Profile" && <Profile />}
               </div>
             </div>

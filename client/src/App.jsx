@@ -11,11 +11,17 @@ const protectRoutes = (condition, children, naivagate) => {
   return condition ? children : <Navigate to={naivagate} />;
 };
 const App = () => {
-  const { authLoading, checkAuth, user, progress } = useAuthStore();
+  const { authLoading, checkAuth, user, progress, getAllUsers } = useAuthStore();
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useEffect(() => {
+    if (user) {
+      getAllUsers();
+    }
+  }, [user, getAllUsers]);
 
   if (authLoading) return <Loading progress={progress} />;
   return (

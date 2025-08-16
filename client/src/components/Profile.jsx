@@ -26,7 +26,7 @@ const Profile = () => {
 
   const [data, setData] = useState({
     fullName: user?.fullName,
-    about: user?.about || "Hey there! I am using ChatDock.",
+    about: user?.about,
     profilePic: null,
   });
 

@@ -212,7 +212,7 @@ export const getAllUsers = async (req, res) => {
         const excludeIds = [req.user._id, ...req.user.friends];
         const users = await User.find({
             _id: { $nin: excludeIds },
-        }).select("-password");
+        }).select("-password").sort({ createdAt: -1 });
         res.status(200).json({ users });
     } catch (error) {
         console.log(error);

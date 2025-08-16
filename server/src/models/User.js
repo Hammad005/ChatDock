@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
   },
   about: {
     type: String,
-    default: null
+    default: "Hey there! I am using ChatDock."
   },
   password: {
     type: String,
