@@ -1,4 +1,5 @@
 import cloudinary from "../lib/cloudinary.js";
+import { io } from "../lib/socket.js";
 import User from "../models/User.js"
 import jwt from "jsonwebtoken"
 
@@ -163,6 +164,8 @@ export const updateProfile = async (req, res) => {
         const userWithoutPassword = { ...updatedUser._doc };
         delete userWithoutPassword.password;
 
+        io.emit("updateProfile", userWithoutPassword);
+
         return res.status(200).json({ user: userWithoutPassword });
     } catch (error) {
         console.log(error);
@@ -200,6 +203,7 @@ export const removeProfile = async (req, res) => {
         const userWithoutPassword = { ...updatedUser._doc };
         delete userWithoutPassword.password;
 
+        io.emit("updateProfile", userWithoutPassword);
         return res.status(200).json({ user: userWithoutPassword });
     } catch (error) {
         console.log(error);

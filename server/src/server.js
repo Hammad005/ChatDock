@@ -8,9 +8,9 @@ import passport from "passport";
 import './config/passport.js';
 import requestsRoute from "./routes/requestsRoute.js";
 import messagesRoute from "./routes/messagesRoute.js";
+import { app, server } from "./lib/socket.js";
 
 
-const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(express.json({
@@ -29,7 +29,7 @@ app.use('/api/auth', authRoute)
 app.use('/api/requests', requestsRoute)
 app.use('/api/messages', messagesRoute)
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     connectDb();
 });

@@ -1,3 +1,4 @@
+import { io } from "../lib/socket.js";
 import Request from "../models/Request.js";
 import User from "../models/User.js";
 
@@ -23,6 +24,8 @@ export const sendRequest = async (req, res) => {
             return res.status(400).json({ error: "You have already sent a request to this user" });
         };
         const request = await Request.create({ requestSender: req.user._id, requestReceiver: id });
+
+        io.emit("newRequest", request);
         res.status(200).json({
             request
         });
@@ -72,6 +75,10 @@ export const rejectRequest = async (req, res) => {
         const receivedRequests = await Request.find({ requestReceiver: req.user._id });
         const sentRequests = await Request.find({ requestSender: req.user._id });
 
+        io.emit("rejectRequest", {
+            sentRequests,
+            receivedRequests
+        });
         res.status(200).json({
             receivedRequests,
             sentRequests
