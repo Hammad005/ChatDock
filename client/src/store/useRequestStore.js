@@ -52,12 +52,25 @@ export const useRequestStore = create((set) => ({
             const res = await axios.put(`/requests/acceptRequest/${id}`);
             set({ sendedRequests: res.data.sentRequests, receivedRequests: res.data.receivedRequests, requestsLoading: false });
             useAuthStore.setState((state) => ({
-                allUsers: state.allUsers.filter(r => r._id !== res.data.receiverFriend),
+                // allUsers: state.allUsers.filter(r => r._id !== res.data.receiverFriend),
                 userFriends: [res.data.receiverFriend, ...state.userFriends]
             }
         ));
-
-        console.log(useAuthStore.getState().allUsers)
+        } catch (error) {
+            console.log(error);
+            set({ requestsLoading: false });
+            toast.error(error.response.data.error);
+        }
+    },
+    removeFriend: async (userId, requestId) => {
+        set({ requestsLoading: true });
+        try {
+            const res = await axios.delete(`/requests/removeFriend/${userId}/${requestId}`);
+            set({ sendedRequests: res.data.sentRequests, receivedRequests: res.data.receivedRequests, requestsLoading: false });
+            
+             useAuthStore.setState((state) => ({
+                userFriends: state.userFriends.filter(r => r !== res.data.removedFriend)
+            }));
         } catch (error) {
             console.log(error);
             set({ requestsLoading: false });

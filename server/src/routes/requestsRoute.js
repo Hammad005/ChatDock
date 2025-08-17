@@ -13,7 +13,7 @@ requestsRoute.post('/sendRequest/:id', sendRequest);
 requestsRoute.put('/acceptRequest/:id', acceptRequest);
 
 requestsRoute.delete('/rejectRequest/:id', rejectRequest);
-requestsRoute.delete('/removeFriend/:id', removeFriend);
+requestsRoute.delete('/removeFriend/:userId/:requestId', removeFriend);
 
 
 export default requestsRoute

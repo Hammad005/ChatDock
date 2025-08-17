@@ -91,29 +91,28 @@ export const rejectRequest = async (req, res) => {
 };
 
 export const removeFriend = async (req, res) => {
-    const { id } = req.params;
+    const { userId, requestId } = req.params;
     try {
 
         const user = await User.findById(req.user._id).select("-password");
-        user.friends = user.friends.filter(friend => friend.toString() !== id);
+        user.friends = user.friends.filter(friend => friend.toString() !== userId);
         await user.save();
 
-        const otherUser = await User.findById(id).select("-password");
+        const otherUser = await User.findById(userId).select("-password");
         if (otherUser?.friends) {
             otherUser.friends = otherUser.friends.filter(friend => friend.toString() !== req.user._id.toString());
             await otherUser.save();
         }
 
 
-        await Request.findOneAndRemove({ requestSender: req.user._id, requestReceiver: id });
-        await Request.findOneAndRemove({ requestSender: id, requestReceiver: req.user._id });
+        await Request.findByIdAndDelete(requestId);
 
         const receivedRequests = await Request.find({ requestReceiver: req.user._id });
         const sentRequests = await Request.find({ requestSender: req.user._id });
         res.status(200).json({
             receivedRequests,
             sentRequests,
-            removedFriend: id
+            removedFriend: userId
         });
 
     } catch (error) {

@@ -213,9 +213,8 @@ export const removeProfile = async (req, res) => {
 
 export const getAllUsers = async (req, res) => {
     try {
-        const excludeIds = [req.user._id, ...req.user.friends];
         const users = await User.find({
-            _id: { $nin: excludeIds },
+            _id: { $nin: req.user._id },
         }).select("-password").sort({ createdAt: -1 });
         res.status(200).json({ users });
     } catch (error) {

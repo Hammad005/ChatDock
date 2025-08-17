@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { useRequestStore } from "@/store/useRequestStore";
 
 const Suggestions = () => {
-  const { allUsers, userLoading } = useAuthStore();
+  const { allUsers, userLoading, userFriends } = useAuthStore();
 
   const {
     sendRequest,
@@ -16,16 +16,20 @@ const Suggestions = () => {
     sendedRequests,
     receivedRequests,
     rejectRequest,
-    acceptRequest
+    acceptRequest,
   } = useRequestStore();
 
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
 
-  const [filteredUser, setfilteredUser] = useState(allUsers);
+  const [filteredUser, setfilteredUser] = useState(
+    allUsers?.filter((u) => !userFriends?.includes(u._id))
+  );
 
   useEffect(() => {
-    setfilteredUser(allUsers);
-  }, [allUsers]);
+    setfilteredUser(
+      allUsers?.filter((u) => !userFriends?.includes(u._id))
+    );
+  }, [allUsers, userFriends]);
 
   const handleRequest = (id) => {
     sendRequest(id);
@@ -38,11 +42,13 @@ const Suggestions = () => {
           placeholder="Search for a user"
           className="rounded-full focus-visible:ring-[1px]"
           onChange={(e) => {
-            const filtered = allUsers.filter((user) => {
-              return user?.fullName
-                ?.toLowerCase()
-                .includes(e.target.value.toLowerCase());
-            });
+            const filtered = allUsers.filter(
+              (user) =>
+                !userFriends?.includes(user._id) &&
+                user?.fullName
+                  ?.toLowerCase()
+                  .includes(e.target.value.toLowerCase())
+            );
             setfilteredUser(filtered);
           }}
         />
@@ -57,7 +63,7 @@ const Suggestions = () => {
 
           {userLoading ? (
             <Loader2 className="animate-spin text-center w-full" />
-          ) : (
+          ) : filteredUser?.length > 0 ? (
             filteredUser?.map((user) => (
               <div
                 className="flex  flex-col gap-3 justify-between "
@@ -112,7 +118,7 @@ const Suggestions = () => {
                   } gap-2 w-full`}
                 >
                   {receivedRequests?.some(
-                    (req) => req?.requestSender=== user._id
+                    (req) => req?.requestSender === user._id
                   ) && (
                     <Button
                       variant={"outline"}
@@ -146,7 +152,6 @@ const Suggestions = () => {
                         : "default"
                     }
                     onClick={() => {
-
                       if (
                         sendedRequests?.some(
                           (req) => req?.requestReceiver === user._id
@@ -157,7 +162,7 @@ const Suggestions = () => {
                           sendedRequests.find(
                             (req) => req?.requestReceiver === user._id
                           )?._id
-                        )
+                        );
                       } else if (
                         receivedRequests?.some(
                           (req) => req?.requestSender === user._id
@@ -168,12 +173,10 @@ const Suggestions = () => {
                           (req) => req?.requestSender === user._id
                         )?._id;
                         acceptRequest(id);
-                        
                       } else {
                         // Send request → pass userId
                         handleRequest(user._id);
                       }
-
                     }}
                   >
                     {requestsLoading ? (
@@ -197,6 +200,8 @@ const Suggestions = () => {
                 </div>
               </div>
             ))
+          ) : (
+            "No suggestions found"
           )}
         </div>
       </div>

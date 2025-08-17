@@ -1,6 +1,7 @@
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FriendRequest from "./FriendRequest";
+import MyFirends from "./MyFirends";
 
 const Friends = () => {
   
@@ -21,7 +22,7 @@ const Friends = () => {
           </TabsContent>
 
           <TabsContent value="My Friends">
-            Change your password here.
+            <MyFirends/>
           </TabsContent>
         </Tabs>
       </div>

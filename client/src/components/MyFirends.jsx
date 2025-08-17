@@ -6,26 +6,23 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
 
-const FriendRequest = () => {
-  const { allUsers, userLoading } = useAuthStore();
-  const { receivedRequests, rejectRequest, acceptRequest, requestsLoading } =
+const MyFirends = () => {
+  const { allUsers, userLoading, userFriends } = useAuthStore();
+  const { receivedRequests, requestsLoading, removeFriend } =
     useRequestStore();
 
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
 
   const [filteredRequest, setfilteredRequest] = useState(
-    allUsers?.filter((u) =>
-      receivedRequests?.some((req) => req?.requestSender === u._id && req.status === "pending")
-    )
+    allUsers?.filter((u) => userFriends?.some((req) => req === u._id))
   );
 
   useEffect(() => {
     setfilteredRequest(
-      allUsers?.filter((u) =>
-        receivedRequests?.some((req) => req?.requestSender === u._id && req.status === "pending")
-      )
+      allUsers?.filter((u) => userFriends?.some((req) => req === u._id))
     );
-  }, [allUsers, receivedRequests]);
+    
+  }, [allUsers, userFriends]);
   return (
     <div className="flex flex-col gap-6 mt-5">
       {userLoading ? (
@@ -74,69 +71,29 @@ const FriendRequest = () => {
               </div>
             </div>
 
-            <div className="flex justify-end">
-              <p className="text-xs text-muted-foreground">
-                {receivedRequests?.map(
-                  (req) =>
-                    req?.requestSender === user._id &&
-                    new Date(req?.createdAt).toDateString()
-                )}
-                {" "}-{" "}
-                {receivedRequests?.map(
-                  (req) =>
-                    req?.requestSender === user._id &&
-                    new Date(req?.createdAt).toLocaleTimeString()
-                )}
-              </p>
-            </div>
-
-            <div
-              className={`grid ${
-                receivedRequests?.some(
-                  (req) => req?.requestSender === user._id
-                ) && "grid-cols-2"
-              } gap-2 w-full`}
-            >
-              <Button
-                variant={"outline"}
-                className={"w-full"}
-                onClick={() => {
-                  const id = receivedRequests.find(
-                    (req) => req?.requestSender === user._id
-                  )?._id;
-                  rejectRequest(id);
-                }}
-              >
-                {requestsLoading ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  "Cancel"
-                )}
-              </Button>
-              <Button
+            <Button
                 disabled={requestsLoading}
                 className={"w-full"}
                 onClick={() => {
                   const id = receivedRequests.find(
                     (req) => req?.requestSender === user._id
                   )?._id;
-                  acceptRequest(id);
+                  removeFriend(user._id, id);
                 }}
               >
                 {requestsLoading ? (
                   <Loader2 className="animate-spin" />
                 ) : (
-                  "Accept Request"
+                  "Remove Friend"
                 )}
               </Button>
-            </div>
           </div>
         ))
       ) : (
-        <h3 className="text-center font-bold">No friend requests</h3>
+        <h3 className="text-center font-bold">No Friends</h3>
       )}
     </div>
   );
 };
 
-export default FriendRequest;
+export default MyFirends;
