@@ -14,19 +14,23 @@ const FriendRequest = () => {
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
 
   const [filteredRequest, setfilteredRequest] = useState(
-    allUsers?.filter((u) => receivedRequests?.some((req) => req?.requestSender === u._id))
+    allUsers?.filter((u) =>
+      receivedRequests?.some((req) => req?.requestSender === u._id)
+    )
   );
 
   useEffect(() => {
     setfilteredRequest(
-      allUsers?.filter((u) => receivedRequests?.some((req) => req?.requestSender === u._id))
+      allUsers?.filter((u) =>
+        receivedRequests?.some((req) => req?.requestSender === u._id)
+      )
     );
   }, [allUsers, receivedRequests]);
   return (
     <div className="flex flex-col gap-6 mt-5">
       {userLoading ? (
         <Loader2 className="animate-spin text-center w-full" />
-      ) : (
+      ) : filteredRequest?.length > 0 ? (
         filteredRequest?.map((user) => (
           <div className="flex  flex-col gap-3 justify-between" key={user._id}>
             <div className="flex items-center gap-4">
@@ -56,17 +60,27 @@ const FriendRequest = () => {
                   </p>
                 )}
               </button>
-              <div className="flex flex-col">
-                <h3 className="text-base font-semibold">
-                  {user.fullName.length > 25
-                    ? `${user.fullName.slice(0, 25)}...`
-                    : user.fullName}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  {user.about.length > 25
-                    ? `${user.about.slice(0, 25)}...`
-                    : user.about}
-                </p>
+              <div className="flex items-center justify-between w-full">
+                <div className="flex flex-col">
+                  <h3 className="text-base font-semibold">
+                    {user.fullName.length > 25
+                      ? `${user.fullName.slice(0, 25)}...`
+                      : user.fullName}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {user.about.length > 25
+                      ? `${user.about.slice(0, 25)}...`
+                      : user.about}
+                  </p>
+                </div>
+                <div className="flex flex-col">
+                  <p></p>
+                  <p className="text-xs text-muted-foreground">
+                    {user.about.length > 25
+                      ? `${user.about.slice(0, 25)}...`
+                      : user.about}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -112,6 +126,8 @@ const FriendRequest = () => {
             </div>
           </div>
         ))
+      ) : (
+        <h3 className="text-center font-bold">No friend requests</h3>
       )}
     </div>
   );
