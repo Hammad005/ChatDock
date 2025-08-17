@@ -32,7 +32,7 @@ export const useAuthStore = create((set, get) => ({
             get().connectSocket();
         } catch (error) {
             console.log(error);
-            set({ authLoading: false, user:null, userFriends: null });
+            set({ authLoading: false, user: null, userFriends: null });
         }
     },
     signup: async (data) => {
@@ -71,7 +71,7 @@ export const useAuthStore = create((set, get) => ({
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.error);
-            set({ userLoading: false});
+            set({ userLoading: false });
         }
     },
     update: async (data) => {
@@ -140,21 +140,23 @@ export const useAuthStore = create((set, get) => ({
         newSocket.off("newRequest").on("newRequest", (data) => {
             if (data?.request?.requestReceiver === user?._id) {
                 toast.warning(`You have a new request from ${data?.fullName}`);
+                useRequestStore.setState((state) => ({
+                    receivedRequests: [data?.request, ...state.receivedRequests],
+                }));
             }
-            
-            
-            useRequestStore.setState((state) => ({
-                receivedRequests: [data?.request, ...state.receivedRequests],
-            }));
+
+
         });
 
         newSocket.off("rejectRequest").on("rejectRequest", (data) => {
-            useRequestStore.setState(() => ({
-                sendedRequests: data.sentRequests,
-                receivedRequests: data.receivedRequests,
+            useRequestStore.setState((state) => ({
+                sendedRequests: state.sendedRequests?.filter((r) => r._id !== data),
+                receivedRequests: state.receivedRequests?.filter((r) => r._id !== data),
             }));
+            console.log(data);
         });
-        
+
+
 
         set({ socket: newSocket });
     },

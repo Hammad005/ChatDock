@@ -79,10 +79,7 @@ export const rejectRequest = async (req, res) => {
         const receivedRequests = await Request.find({ requestReceiver: req.user._id });
         const sentRequests = await Request.find({ requestSender: req.user._id });
 
-        io.emit("rejectRequest", {
-            sentRequests,
-            receivedRequests
-        });
+        io.emit("rejectRequest", id);
         res.status(200).json({
             receivedRequests,
             sentRequests

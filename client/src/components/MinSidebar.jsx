@@ -2,7 +2,7 @@ import React from "react";
 import ModeToggle from "./ModeToggle";
 import Logo from "../assets/logo.png";
 import { Button } from "./ui/button";
-import { BellRing, Home, Loader2, LogOut, MessageCircleMore } from "lucide-react";
+import { Home, Loader2, LogOut, MessageCircleMore, Users } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -52,14 +52,14 @@ const MinSidebar = ({ active, setActive }) => {
             <TooltipTrigger asChild>
               <Button
                 size={"icon"}
-                onClick={() => setActive("Notification")}
-                variant={active === "Notification" ? "default" : "secondary"}
+                onClick={() => setActive("Friends")}
+                variant={active === "Friends" ? "default" : "secondary"}
               >
-                <BellRing />
+                <Users />
               </Button>
             </TooltipTrigger>
             <TooltipContent side={"right"}>
-              <p>Notifications</p>
+              <p>Friends</p>
             </TooltipContent>
           </Tooltip>
 

@@ -4,6 +4,7 @@ import HomePhoto from "../assets/HomePhoto.png";
 import Logo from "../assets/logo.png";
 import Profile from "@/components/Profile";
 import Suggestions from "@/components/Suggestions";
+import Friends from "@/components/Friends";
 
 const Home = () => {
   const [active, setActive] = useState("Home");
@@ -27,6 +28,7 @@ const Home = () => {
               <div className="h-full overflow-y-auto overflow-x-hidden">
                 {active === "Home" && <Suggestions />}
                 {active === "Profile" && <Profile />}
+                {active === "Friends" && <Friends />}
               </div>
             </div>
           </div>

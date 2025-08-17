@@ -11,8 +11,8 @@ const requestSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["sending", "accepted"],
-        default: "sending"
+        enum: ["pending", "accepted"],
+        default: "pending"
     }
 }, { timestamps: true });
 
