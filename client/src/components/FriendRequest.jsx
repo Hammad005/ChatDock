@@ -60,28 +60,34 @@ const FriendRequest = () => {
                   </p>
                 )}
               </button>
-              <div className="flex items-center justify-between w-full">
-                <div className="flex flex-col">
-                  <h3 className="text-base font-semibold">
-                    {user.fullName.length > 25
-                      ? `${user.fullName.slice(0, 25)}...`
-                      : user.fullName}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {user.about.length > 25
-                      ? `${user.about.slice(0, 25)}...`
-                      : user.about}
-                  </p>
-                </div>
-                <div className="flex flex-col">
-                  <p></p>
-                  <p className="text-xs text-muted-foreground">
-                    {user.about.length > 25
-                      ? `${user.about.slice(0, 25)}...`
-                      : user.about}
-                  </p>
-                </div>
+              <div className="flex flex-col">
+                <h3 className="text-base font-semibold">
+                  {user.fullName.length > 25
+                    ? `${user.fullName.slice(0, 25)}...`
+                    : user.fullName}
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  {user.about.length > 25
+                    ? `${user.about.slice(0, 25)}...`
+                    : user.about}
+                </p>
               </div>
+            </div>
+
+            <div className="flex justify-end">
+              <p className="text-xs text-muted-foreground">
+                {receivedRequests?.map(
+                  (req) =>
+                    req?.requestSender === user._id &&
+                    new Date(req?.createdAt).toDateString()
+                )}
+                {" "}-{" "}
+                {receivedRequests?.map(
+                  (req) =>
+                    req?.requestSender === user._id &&
+                    new Date(req?.createdAt).toLocaleTimeString()
+                )}
+              </p>
             </div>
 
             <div
