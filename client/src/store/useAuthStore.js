@@ -13,6 +13,7 @@ export const useAuthStore = create((set, get) => ({
     updateUserLoading: false,
     progress: 0,
     socket: null,
+    userFriends: null,
 
     checkAuth: async () => {
         set({ authLoading: true, progress: 0 });
@@ -27,78 +28,78 @@ export const useAuthStore = create((set, get) => ({
         await delay(1500);
         try {
             const res = await axios.get('/auth/me');
-            set({ user: res.data.user, authLoading: false });
+            set({ user: res.data.user, authLoading: false, userFriends: res.data.user?.friends });
             get().connectSocket();
         } catch (error) {
             console.log(error);
-            set({ authLoading: false });
+            set({ authLoading: false, user:null, userFriends: null });
         }
     },
     signup: async (data) => {
         set({ userLoading: true });
         try {
             const res = await axios.post('/auth/signup', data);
-            set({ user: res.data.user, userLoading: false });
+            set({ user: res.data.user, userLoading: false, userFriends: res.data.user?.friends });
             toast.success('Signup successful');
             get().connectSocket();
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.error);
-            set({ userLoading: false, user: null });
+            set({ userLoading: false, user: null, userFriends: null });
         }
     },
     login: async (data) => {
         set({ userLoading: true });
         try {
             const res = await axios.post('/auth/login', data);
-            set({ user: res.data.user, userLoading: false });
+            set({ user: res.data.user, userLoading: false, userFriends: res.data.user?.friends });
             toast.success('Login successful');
             get().connectSocket();
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.error);
-            set({ userLoading: false, user: null });
+            set({ userLoading: false, user: null, userFriends: null });
         }
     },
     logout: async () => {
         set({ userLoading: true });
         try {
             await axios.post('/auth/logout');
-            set({ user: null, userLoading: false });
+            set({ user: null, userLoading: false, userFriends: null });
             toast.success('Logout successful');
             get().disConnectSocket();
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.error);
-            set({ userLoading: false, user: null });
+            set({ userLoading: false});
         }
     },
     update: async (data) => {
         set({ updateUserLoading: true });
         try {
             const res = await axios.put('/auth/update', data);
-            set({ user: res.data.user, updateUserLoading: false });
+            set({ user: res.data.user, updateUserLoading: false, userFriends: res.data.user?.friends });
             toast.success('Update successful');
             get().connectSocket();
             return { success: true }
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.error);
-            set({ updateUserLoading: false, user: null });
+            set({ updateUserLoading: false });
         }
     },
     removeProfile: async () => {
         set({ updateUserLoading: true });
         try {
             const res = await axios.delete('/auth/removeProfile');
-            set({ user: res.data.user, updateUserLoading: false });
+            set({ user: res.data.user, updateUserLoading: false, userFriends: res.data.user?.friends });
             toast.success('Profile removed successfully');
             get().connectSocket();
             return { success: true }
         } catch (error) {
             console.log(error);
             toast.error(error.response.data.error);
-            set({ updateUserLoading: false, user: null });
+            set({ updateUserLoading: false });
         }
     },
     getAllUsers: async () => {

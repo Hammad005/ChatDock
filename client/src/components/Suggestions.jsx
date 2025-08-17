@@ -16,6 +16,7 @@ const Suggestions = () => {
     sendedRequests,
     receivedRequests,
     rejectRequest,
+    acceptRequest
   } = useRequestStore();
 
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
@@ -126,7 +127,7 @@ const Suggestions = () => {
                       {requestsLoading ? (
                         <Loader2 className="animate-spin" />
                       ) : (
-                        "Reject Request"
+                        "Cancel"
                       )}
                     </Button>
                   )}
@@ -166,7 +167,7 @@ const Suggestions = () => {
                         const id = receivedRequests.find(
                           (req) => req?.requestSender === user._id
                         )?._id;
-                        console.log(id);
+                        acceptRequest(id);
                         
                       } else {
                         // Send request → pass userId
