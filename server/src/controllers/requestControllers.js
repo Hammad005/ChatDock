@@ -59,6 +59,11 @@ export const acceptRequest = async (req, res) => {
 
         const receivedRequests = await Request.find({ requestReceiver: req.user._id });
         const sentRequests = await Request.find({ requestSender: req.user._id });
+
+        io.emit("acceptRequest", {
+            sentRequests,
+            senderFriend: receiver._id,
+        });
         res.status(200).json({
             receivedRequests,
             sentRequests,
@@ -109,6 +114,12 @@ export const removeFriend = async (req, res) => {
 
         const receivedRequests = await Request.find({ requestReceiver: req.user._id });
         const sentRequests = await Request.find({ requestSender: req.user._id });
+
+        io.emit("removeFriend", {
+            removedBy: req.user._id,
+            receivedRequests,
+            sentRequests,
+        });
         res.status(200).json({
             receivedRequests,
             sentRequests,

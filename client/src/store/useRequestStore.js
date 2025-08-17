@@ -52,7 +52,6 @@ export const useRequestStore = create((set) => ({
             const res = await axios.put(`/requests/acceptRequest/${id}`);
             set({ sendedRequests: res.data.sentRequests, receivedRequests: res.data.receivedRequests, requestsLoading: false });
             useAuthStore.setState((state) => ({
-                // allUsers: state.allUsers.filter(r => r._id !== res.data.receiverFriend),
                 userFriends: [res.data.receiverFriend, ...state.userFriends]
             }
         ));
