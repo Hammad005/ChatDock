@@ -23,9 +23,13 @@ export const sendRequest = async (req, res) => {
         if (exists) {
             return res.status(400).json({ error: "You have already sent a request to this user" });
         };
-        const request = await Request.create({ requestSender: req.user._id, requestReceiver: id });
-
-        io.emit("newRequest", request);
+        const request = await Request.create({ requestSender: req.user._id, requestReceiver: id })
+        
+        const populateRequest = await Request.findById(request._id).populate("requestSender");
+        io.emit("newRequest", {
+            request,
+            fullName: populateRequest?.requestSender?.fullName
+        });
         res.status(200).json({
             request
         });

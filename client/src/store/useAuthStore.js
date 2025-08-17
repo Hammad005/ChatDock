@@ -129,7 +129,6 @@ export const useAuthStore = create((set, get) => ({
 
         // ✅ safe event binding (prevent duplicates)
         newSocket.off("updateProfile").on("updateProfile", (data) => {
-            console.log("updateProfile", data);
             set({
                 allUsers: get().allUsers?.map((u) =>
                     u._id === data._id ? { ...u, ...data } : u
@@ -138,8 +137,13 @@ export const useAuthStore = create((set, get) => ({
         });
 
         newSocket.off("newRequest").on("newRequest", (data) => {
+            if (data?.request?.requestReceiver === user?._id) {
+                toast.warning(`You have a new request from ${data?.fullName}`);
+            }
+            
+            
             useRequestStore.setState((state) => ({
-                receivedRequests: [data, ...state.receivedRequests],
+                receivedRequests: [data?.request, ...state.receivedRequests],
             }));
         });
 

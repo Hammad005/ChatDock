@@ -106,19 +106,19 @@ const Suggestions = () => {
                 <div
                   className={`grid ${
                     receivedRequests?.some(
-                      (req) => req.requestSender.toString() === user._id
+                      (req) => req?.requestSender === user._id
                     ) && "grid-cols-2"
                   } gap-2 w-full`}
                 >
                   {receivedRequests?.some(
-                    (req) => req.requestSender.toString() === user._id
+                    (req) => req?.requestSender=== user._id
                   ) && (
                     <Button
                       variant={"outline"}
                       className={"w-full"}
                       onClick={() => {
                         const id = receivedRequests.find(
-                          (req) => req.requestSender.toString() === user._id
+                          (req) => req?.requestSender === user._id
                         )?._id;
                         rejectRequest(id);
                       }}
@@ -135,11 +135,11 @@ const Suggestions = () => {
                     className={"w-full"}
                     variant={
                       sendedRequests?.some(
-                        (req) => req.requestReceiver.toString() === user._id
+                        (req) => req?.requestReceiver === user._id
                       )
                         ? "secondary"
                         : receivedRequests?.some(
-                            (req) => req.requestSender.toString() === user._id
+                            (req) => req?.requestSender === user._id
                           )
                         ? "default"
                         : "default"
@@ -148,23 +148,23 @@ const Suggestions = () => {
 
                       if (
                         sendedRequests?.some(
-                          (req) => req.requestReceiver.toString() === user._id
+                          (req) => req?.requestReceiver === user._id
                         )
                       ) {
                         // Cancel request → pass requestId
                         return rejectRequest(
                           sendedRequests.find(
-                            (req) => req.requestReceiver.toString() === user._id
+                            (req) => req?.requestReceiver === user._id
                           )?._id
                         )
                       } else if (
                         receivedRequests?.some(
-                          (req) => req.requestSender.toString() === user._id
+                          (req) => req?.requestSender === user._id
                         )
                       ) {
                         // Accept request → you probably want to pass requestId here too
                         const id = receivedRequests.find(
-                          (req) => req.requestSender.toString() === user._id
+                          (req) => req?.requestSender === user._id
                         )?._id;
                         console.log(id);
                         
@@ -178,13 +178,13 @@ const Suggestions = () => {
                     {requestsLoading ? (
                       <Loader2 className="animate-spin" />
                     ) : sendedRequests?.some(
-                        (req) => req.requestReceiver.toString() === user._id
+                        (req) => req?.requestReceiver === user._id
                       ) ? (
                       <>
                         <UserMinus /> Cancel Request
                       </>
                     ) : receivedRequests?.some(
-                        (req) => req.requestSender.toString() === user._id
+                        (req) => req?.requestSender === user._id
                       ) ? (
                       <>Accept Request</>
                     ) : (
