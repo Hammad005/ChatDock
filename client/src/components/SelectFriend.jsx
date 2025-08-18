@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Loader2, UserPlus } from "lucide-react";
 
-const SelectFriend = ({ setActive }) => {
+const SelectFriend = ({ setActive, activeChat, setActiveChat }) => {
   const { allUsers, userLoading, userFriends, onlineUsers } = useAuthStore();
 
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
@@ -44,8 +44,11 @@ const SelectFriend = ({ setActive }) => {
         ) : filteredFriends?.length > 0 ? (
           filteredFriends?.map((user) => (
             <button
-              className="hover:bg-muted-foreground/10 p-3 rounded-md border"
+              className={`${activeChat === user._id && "bg-muted-foreground/10"} hover:bg-muted-foreground/10 p-3 rounded-md border`}
               key={user._id}
+              onClick={() => {
+                setActiveChat((prev) => (prev === user._id ? null : user._id));
+              }}
             >
               <div className="flex items-center gap-4">
                 <div className="relative">
