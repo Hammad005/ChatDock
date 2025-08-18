@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "./ui/button";
 
 const FriendRequest = () => {
+  const [activeButton, setActiveButton] = useState(null);
   const { allUsers, userLoading } = useAuthStore();
   const { receivedRequests, rejectRequest, acceptRequest, requestsLoading } =
     useRequestStore();
@@ -105,6 +106,7 @@ const FriendRequest = () => {
                     (req) => req?.requestSender === user._id
                   )?._id;
                   rejectRequest(id);
+                  setActiveButton(user._id);
                 }}
               >
                 {requestsLoading ? (
@@ -121,9 +123,10 @@ const FriendRequest = () => {
                     (req) => req?.requestSender === user._id
                   )?._id;
                   acceptRequest(id);
+                  setActiveButton(user._id);
                 }}
               >
-                {requestsLoading ? (
+                {(requestsLoading && activeButton === user._id) ? (
                   <Loader2 className="animate-spin" />
                 ) : (
                   "Accept Request"

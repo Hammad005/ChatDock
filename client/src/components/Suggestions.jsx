@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useRequestStore } from "@/store/useRequestStore";
 
 const Suggestions = () => {
+  const [activeButton, setActiveButton] = useState(null);
   const { allUsers, userLoading, userFriends } = useAuthStore();
 
   const {
@@ -34,6 +35,7 @@ const Suggestions = () => {
   const handleRequest = (id) => {
     sendRequest(id);
   };
+  
   return (
     <>
       <div className="flex flex-col items-center w-full gap-4 mt-5">
@@ -127,6 +129,7 @@ const Suggestions = () => {
                         const id = receivedRequests.find(
                           (req) => req?.requestSender === user._id
                         )?._id;
+                        setActiveButton(user._id);
                         rejectRequest(id);
                       }}
                     >
@@ -157,6 +160,7 @@ const Suggestions = () => {
                           (req) => req?.requestReceiver === user._id
                         )
                       ) {
+                        setActiveButton(user._id);
                         // Cancel request → pass requestId
                         return rejectRequest(
                           sendedRequests.find(
@@ -168,18 +172,20 @@ const Suggestions = () => {
                           (req) => req?.requestSender === user._id
                         )
                       ) {
+                        setActiveButton(user._id);
                         // Accept request → you probably want to pass requestId here too
                         const id = receivedRequests.find(
                           (req) => req?.requestSender === user._id
                         )?._id;
                         acceptRequest(id);
                       } else {
+                        setActiveButton(user._id);
                         // Send request → pass userId
                         handleRequest(user._id);
                       }
                     }}
                   >
-                    {requestsLoading ? (
+                    {(requestsLoading && activeButton === user._id) ? (
                       <Loader2 className="animate-spin" />
                     ) : sendedRequests?.some(
                         (req) => req?.requestReceiver === user._id

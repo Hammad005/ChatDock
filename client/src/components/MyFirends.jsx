@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "./ui/button";
 
 const MyFirends = () => {
+  const [activeButton, setActiveButton] = useState(null);
   const { allUsers, userLoading, userFriends } = useAuthStore();
   const { receivedRequests, requestsLoading, removeFriend, sendedRequests } =
     useRequestStore();
@@ -82,9 +83,10 @@ const MyFirends = () => {
                     (req) => req?.requestReceiver === user._id
                   )?._id;
                   removeFriend(user._id, id || sendedId);
+                  setActiveButton(user._id);
                 }}
               >
-                {requestsLoading ? (
+                {(requestsLoading && activeButton === user._id) ? (
                   <Loader2 className="animate-spin" />
                 ) : (
                   "Remove Friend"

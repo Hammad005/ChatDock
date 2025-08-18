@@ -53,8 +53,8 @@ const MinSidebar = ({ active, setActive }) => {
           <Tooltip>
             <TooltipTrigger asChild>
               <div className="relative">
-              {receivedRequests?.length > 0 && <span className="absolute top-0 right-0 -translate-y-1/3 translate-x-1/2 min-w-5 min-h-5 bg-red-500 rounded-full text-xs flex items-center justify-center pr-0.5">
-              {receivedRequests?.length}
+              {receivedRequests?.filter((r) => r.status === "pending").length > 0 && <span className="absolute top-0 right-0 -translate-y-1/3 translate-x-1/2 min-w-5 min-h-5 bg-red-500 rounded-full text-xs flex items-center justify-center pr-0.5">
+              {receivedRequests?.filter((r) => r.status === "pending").length}
               </span>}
               <Button
                 size={"icon"}
