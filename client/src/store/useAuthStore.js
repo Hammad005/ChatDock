@@ -143,16 +143,14 @@ export const useAuthStore = create((set, get) => ({
                 useRequestStore.setState((state) => ({
                     receivedRequests: [data?.request, ...state.receivedRequests],
                 }));
-            }
-
-
+            }            
         });
 
         newSocket.off("rejectRequest").on("rejectRequest", (data) => {
             useRequestStore.setState((state) => ({
                 sendedRequests: state.sendedRequests?.filter((r) => r._id !== data),
                 receivedRequests: state.receivedRequests?.filter((r) => r._id !== data),
-            }));
+            }));            
         });
 
 

@@ -1,4 +1,4 @@
-import { io } from "../lib/socket.js";
+import { getReceiverSocketId, io } from "../lib/socket.js";
 import Request from "../models/Request.js";
 import User from "../models/User.js";
 
@@ -24,12 +24,26 @@ export const sendRequest = async (req, res) => {
             return res.status(400).json({ error: "You have already sent a request to this user" });
         };
         const request = await Request.create({ requestSender: req.user._id, requestReceiver: id })
-        
-        const populateRequest = await Request.findById(request._id).populate("requestSender");
-        io.emit("newRequest", {
-            request,
-            fullName: populateRequest?.requestSender?.fullName
-        });
+
+        const populatedRequest = await Request.findById(request._id).populate("requestSender");
+
+
+        const receiverSocketId = getReceiverSocketId(id);
+        const senderSocketId = getReceiverSocketId(req.user._id);
+
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newRequest", {
+                request: request,
+                fullName: populatedRequest?.requestSender?.fullName,
+            });
+        }
+
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("newRequest", {
+                request: request,
+                fullName: populatedRequest?.requestSender?.fullName,
+            });
+        }
         res.status(200).json({
             request
         });
@@ -60,10 +74,21 @@ export const acceptRequest = async (req, res) => {
         const receivedRequests = await Request.find({ requestReceiver: req.user._id });
         const sentRequests = await Request.find({ requestSender: req.user._id });
 
-        io.emit("acceptRequest", {
-            sentRequests,
+        const receiverSocketId = getReceiverSocketId(req.user._id);
+        const senderSocketId = getReceiverSocketId(request.requestSender._id);
+
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("acceptRequest", {
+                sentRequests,
             senderFriend: receiver._id,
-        });
+            });
+        }
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("acceptRequest", {
+                sentRequests,
+            senderFriend: receiver._id,
+            });
+        }
         res.status(200).json({
             receivedRequests,
             sentRequests,
@@ -80,20 +105,38 @@ export const acceptRequest = async (req, res) => {
 export const rejectRequest = async (req, res) => {
     const { id } = req.params;
     try {
-         await Request.findByIdAndDelete(id);
+        // find and delete request
+        const request = await Request.findByIdAndDelete(id);
+        if (!request) {
+            return res.status(404).json({ error: "Request not found" });
+        }
+
+        // get updated requests for current user
         const receivedRequests = await Request.find({ requestReceiver: req.user._id });
         const sentRequests = await Request.find({ requestSender: req.user._id });
 
-        io.emit("rejectRequest", id);
+        // notify receiver (the one who got the request)
+        const receiverSocketId = getReceiverSocketId(request?.requestReceiver);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("rejectRequest", id);
+        }
+
+        // notify sender (the one who sent the request)
+        const senderSocketId = getReceiverSocketId(request?.requestSender);
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("rejectRequest", id);
+        }
+
         res.status(200).json({
             receivedRequests,
-            sentRequests
+            sentRequests,
         });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: error.message || "Internal Server Error" });
     }
 };
+
 
 export const removeFriend = async (req, res) => {
     const { userId, requestId } = req.params;
@@ -112,14 +155,28 @@ export const removeFriend = async (req, res) => {
 
         await Request.findByIdAndDelete(requestId);
 
-        const receivedRequests = await Request.find({ requestReceiver: req.user._id});
+        const receivedRequests = await Request.find({ requestReceiver: req.user._id });
         const sentRequests = await Request.find({ requestSender: req.user._id });
 
-        io.emit("removeFriend", {
-            removedBy: req.user._id,
-            removedFriend: userId,
-            requestId
-        });
+
+        const receiverSocketId = getReceiverSocketId(userId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("removeFriend", {
+                removedBy: req.user._id,
+                removedFriend: userId,
+                requestId
+            });
+        }
+
+        const senderSocketId = getReceiverSocketId(req.user._id);
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("removeFriend", {
+                removedBy: req.user._id,
+                removedFriend: userId,
+                requestId
+            });
+        }
+        
         res.status(200).json({
             receivedRequests,
             sentRequests,

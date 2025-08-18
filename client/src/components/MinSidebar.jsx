@@ -9,9 +9,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useRequestStore } from "@/store/useRequestStore";
 
 const MinSidebar = ({ active, setActive }) => {
   const { user, logout, userLoading } = useAuthStore();
+  const { receivedRequests } = useRequestStore();
 
   return (
     <>
@@ -50,6 +52,10 @@ const MinSidebar = ({ active, setActive }) => {
 
           <Tooltip>
             <TooltipTrigger asChild>
+              <div className="relative">
+              {receivedRequests?.length > 0 && <span className="absolute top-0 right-0 -translate-y-1/3 translate-x-1/2 min-w-5 min-h-5 bg-red-500 rounded-full text-xs flex items-center justify-center pr-0.5">
+              {receivedRequests?.length}
+              </span>}
               <Button
                 size={"icon"}
                 onClick={() => setActive("Friends")}
@@ -57,6 +63,7 @@ const MinSidebar = ({ active, setActive }) => {
               >
                 <Users />
               </Button>
+              </div>
             </TooltipTrigger>
             <TooltipContent side={"right"}>
               <p>Friends</p>
