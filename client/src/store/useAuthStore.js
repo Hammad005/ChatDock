@@ -175,11 +175,6 @@ export const useAuthStore = create((set, get) => ({
                     };
                 });
             }
-
-            console.log(useRequestStore.get().receivedRequests);
-            console.log(useRequestStore.get().sendedRequests);
-            console.log(get().userFriends);
-            
         })
 
         set({ socket: newSocket });
