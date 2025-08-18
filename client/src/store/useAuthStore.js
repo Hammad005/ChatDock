@@ -14,6 +14,7 @@ export const useAuthStore = create((set, get) => ({
     progress: 0,
     socket: null,
     userFriends: null,
+    onlineUsers: null,
 
     checkAuth: async () => {
         set({ authLoading: true, progress: 0 });
@@ -128,6 +129,10 @@ export const useAuthStore = create((set, get) => ({
             autoConnect: true,
         });
 
+        newSocket.off('getOnlineUsers').on('getOnlineUsers', (data) => {
+            set({ onlineUsers: data });
+        });
+
         // ✅ safe event binding (prevent duplicates)
         newSocket.off("updateProfile").on("updateProfile", (data) => {
             set({
@@ -179,10 +184,12 @@ export const useAuthStore = create((set, get) => ({
     },
 
     disConnectSocket: () => {
-        const { socket } = get();
-        if (socket) {
-            socket.disconnect();
-            set({ socket: null });
-        }
-    },
+    const socket = get().socket;
+    if (socket?.connected) {
+        socket.disconnect();
+    }
+    // clear the socket reference
+    set({ socket: null });
+},
+
 }));

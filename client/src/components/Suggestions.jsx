@@ -22,12 +22,12 @@ const Suggestions = () => {
 
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
 
-  const [filteredUser, setfilteredUser] = useState(
+  const [filteredUser, setFilteredUser] = useState(
     allUsers?.filter((u) => !userFriends?.includes(u._id))
   );
 
   useEffect(() => {
-    setfilteredUser(
+    setFilteredUser(
       allUsers?.filter((u) => !userFriends?.includes(u._id))
     );
   }, [allUsers, userFriends]);
@@ -51,7 +51,7 @@ const Suggestions = () => {
                   ?.toLowerCase()
                   .includes(e.target.value.toLowerCase())
             );
-            setfilteredUser(filtered);
+            setFilteredUser(filtered);
           }}
         />
 

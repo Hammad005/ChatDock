@@ -14,14 +14,14 @@ const FriendRequest = () => {
 
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
 
-  const [filteredRequest, setfilteredRequest] = useState(
+  const [filteredRequest, setFilteredRequest] = useState(
     allUsers?.filter((u) =>
       receivedRequests?.some((req) => req?.requestSender === u._id && req.status === "pending")
     )
   );
 
   useEffect(() => {
-    setfilteredRequest(
+    setFilteredRequest(
       allUsers?.filter((u) =>
         receivedRequests?.some((req) => req?.requestSender === u._id && req.status === "pending")
       )

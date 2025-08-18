@@ -14,11 +14,13 @@ const io = new Server(server, {
     }
 });
 
-const userSocketMap = {};
 
 export const getReceiverSocketId = (userId) => {
     return userSocketMap[userId];
 };
+
+const userSocketMap = {};
+
 
 io.on('connection', (socket) => {
     console.log(`User Connected: ${socket.id}`);
@@ -31,7 +33,14 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log(`User Disconnected: ${socket.id}`);
-        delete userSocketMap[socket.id];
+
+        for (const [uid, sid] of Object.entries(userSocketMap)) {
+            if (sid === socket.id) {
+                delete userSocketMap[uid];
+                break;
+            }
+        }
+
         io.emit("getOnlineUsers", Object.keys(userSocketMap));
     });
 })

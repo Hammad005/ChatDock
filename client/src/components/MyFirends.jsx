@@ -8,18 +8,18 @@ import { Button } from "./ui/button";
 
 const MyFirends = () => {
   const [activeButton, setActiveButton] = useState(null);
-  const { allUsers, userLoading, userFriends } = useAuthStore();
+  const { allUsers, userLoading, userFriends, onlineUsers } = useAuthStore();
   const { receivedRequests, requestsLoading, removeFriend, sendedRequests } =
     useRequestStore();
 
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
 
-  const [filteredRequest, setfilteredRequest] = useState(
+  const [filteredRequest, setFilteredRequest] = useState(
     allUsers?.filter((u) => userFriends?.some((req) => req === u._id))
   );
 
   useEffect(() => {
-    setfilteredRequest(
+    setFilteredRequest(
       allUsers?.filter((u) => userFriends?.some((req) => req === u._id))
     );
     
@@ -32,6 +32,10 @@ const MyFirends = () => {
         filteredRequest?.map((user) => (
           <div className="flex  flex-col gap-3 justify-between" key={user._id}>
             <div className="flex items-center gap-4">
+              <div className="relative">
+                <span className={`absolute bottom-0 right-0 -translate-y-1/4 w-4 h-4 border-2 border-white rounded-full
+                    ${onlineUsers?.includes(user._id) ? "bg-green-500" : "bg-gray-500"}
+                    `}/>
               <button
                 onClick={() => {
                   if (user?.profilePic?.imageUrl) {
@@ -58,6 +62,7 @@ const MyFirends = () => {
                   </p>
                 )}
               </button>
+              </div>
               <div className="flex flex-col">
                 <h3 className="text-base font-semibold">
                   {user.fullName.length > 25
