@@ -8,7 +8,7 @@ import { Button } from "./ui/button";
 
 const MyFirends = () => {
   const { allUsers, userLoading, userFriends } = useAuthStore();
-  const { receivedRequests, requestsLoading, removeFriend } =
+  const { receivedRequests, requestsLoading, removeFriend, sendedRequests } =
     useRequestStore();
 
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
@@ -75,10 +75,13 @@ const MyFirends = () => {
                 disabled={requestsLoading}
                 className={"w-full"}
                 onClick={() => {
-                  const id = receivedRequests.find(
+                  const id = receivedRequests?.find(
                     (req) => req?.requestSender === user._id
                   )?._id;
-                  removeFriend(user._id, id);
+                  const sendedId = sendedRequests?.find(
+                    (req) => req?.requestReceiver === user._id
+                  )?._id;
+                  removeFriend(user._id, id || sendedId);
                 }}
               >
                 {requestsLoading ? (

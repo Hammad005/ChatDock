@@ -153,7 +153,6 @@ export const useAuthStore = create((set, get) => ({
                 sendedRequests: state.sendedRequests?.filter((r) => r._id !== data),
                 receivedRequests: state.receivedRequests?.filter((r) => r._id !== data),
             }));
-            console.log(data);
         });
 
 
@@ -164,18 +163,23 @@ export const useAuthStore = create((set, get) => ({
             set({ userFriends: [data?.senderFriend, ...get().userFriends] });
         });
 
-        newSocket.off("removeFriend").on("removeFriend" , (data) => {
+        newSocket.off("removeFriend").on("removeFriend", (data) => {
             if (data?.removedBy !== user?._id) {
-                useRequestStore.setState(() => ({
-                    sendedRequests: data?.sentRequests,
-                    receivedRequests: data?.receivedRequests
+                useRequestStore.setState((state) => ({
+                    receivedRequests: state.receivedRequests?.filter((r) => r._id !== data?.requestId),
+                    sendedRequests: state.sendedRequests?.filter((r) => r._id !== data?.requestId),
                 }));
-            set((state) => {
-                return {
-                    userFriends: state.userFriends?.filter((f) => f._id !== data?.removedBy),
-                };
-            });
+                set((state) => {
+                    return {
+                        userFriends: state.userFriends?.filter((f) => f !== data?.removedBy),
+                    };
+                });
             }
+
+            console.log(useRequestStore.get().receivedRequests);
+            console.log(useRequestStore.get().sendedRequests);
+            console.log(get().userFriends);
+            
         })
 
         set({ socket: newSocket });

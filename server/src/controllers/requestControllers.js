@@ -112,13 +112,13 @@ export const removeFriend = async (req, res) => {
 
         await Request.findByIdAndDelete(requestId);
 
-        const receivedRequests = await Request.find({ requestReceiver: req.user._id });
+        const receivedRequests = await Request.find({ requestReceiver: req.user._id});
         const sentRequests = await Request.find({ requestSender: req.user._id });
 
         io.emit("removeFriend", {
             removedBy: req.user._id,
-            receivedRequests,
-            sentRequests,
+            removedFriend: userId,
+            requestId
         });
         res.status(200).json({
             receivedRequests,
