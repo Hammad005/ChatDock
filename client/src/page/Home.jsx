@@ -6,6 +6,7 @@ import Profile from "@/components/Profile";
 import Suggestions from "@/components/Suggestions";
 import Friends from "@/components/Friends";
 import SelectFriend from "@/components/SelectFriend";
+import Chat from "@/components/Chat";
 
 const Home = () => {
   const [active, setActive] = useState("Home");
@@ -20,7 +21,7 @@ const Home = () => {
               <MinSidebar active={active} setActive={setActive} />
             </div>
             <div className="col-span-10 p-3 flex flex-col h-screen gap-4">
-              <h3 className="text-3xl font-bold tracking-wider flex flex-col">
+              <h3 className={`text-3xl font-bold tracking-wider ${activeChat ? "hidden lg:flex" : "flex"} flex-col`}>
                 ChatDock
                 <span className="text-xs text-muted-foreground tracking-normal ">
                   {active}
@@ -32,20 +33,23 @@ const Home = () => {
                 {active === "Profile" && <Profile />}
                 {active === "Chat" && (
                   <>
-                  <div
-                    className={`${activeChat ? "hidden lg:block" : "block"}`}
-                  >
-                    <SelectFriend
-                      setActive={setActive}
-                      activeChat={activeChat}
-                      setActiveChat={setActiveChat}
-                    />
-                  </div>
-                  <div
-                    className={`${activeChat ? "lg:hidden block" : "hidden"}`}
-                  >
-                    "Select a friend to start a conversation"
-                  </div>
+                    <div
+                      className={`${activeChat ? "hidden lg:block" : "block"}`}
+                    >
+                      <SelectFriend
+                        setActive={setActive}
+                        activeChat={activeChat}
+                        setActiveChat={setActiveChat}
+                      />
+                    </div>
+                    <div
+                      className={`${activeChat ? "lg:hidden block" : "hidden"}`}
+                    >
+                      <Chat
+                        activeChat={activeChat}
+                        setActiveChat={setActiveChat}
+                      />
+                    </div>
                   </>
                 )}
                 {active === "Friends" && <Friends />}
@@ -84,7 +88,9 @@ const Home = () => {
               </p>
             </div>
           ) : (
-            ""
+            <div className="h-full overflow-y-auto overflow-x-hidden w-full">
+              <Chat activeChat={activeChat} setActiveChat={setActiveChat} />
+            </div>
           )}
         </div>
       </div>

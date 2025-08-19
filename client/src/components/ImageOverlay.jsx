@@ -8,7 +8,7 @@ const ImageOverlay = () => {
 
   if (!isOverlayOpen) return null; // only show if context says so
   return (
-    <div className="fixed inset-0 bg-black/20 backdrop-blur z-50 data-[state=open]:animate-overlayShow w-full">
+    <div className="fixed inset-0 bg-black/20 backdrop-blur z-[100] data-[state=open]:animate-overlayShow w-full">
         <div className="flex items-center justify-between p-4 w-full ">
           <div className="flex items-center gap-2">
             <div className="size-12 object-contain rounded-full overflow-hidden border-2 border-primary">
