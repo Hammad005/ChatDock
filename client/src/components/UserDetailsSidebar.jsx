@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/sheet";
 import { useImageOverlay } from "@/context/ImageOverlayContext";
 import { toast } from "sonner";
+import { ArrowRight, Images } from "lucide-react";
+import { Button } from "./ui/button";
 
 const UserDetailsSidebar = ({ open, setOpen, user }) => {
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
@@ -48,12 +50,32 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
 
           <h3 className="text-2xl font-semibold flex flex-col items-center gap-1">
             {user?.fullName}
-            <span className="text-muted-foreground text-sm font-normal">{user?.email}</span>
-        </h3>
+            <span className="text-muted-foreground text-sm font-normal">
+              {user?.email}
+            </span>
+          </h3>
 
           <div className="flex flex-col items-start gap-2 mt-5 px-6 w-full">
             <p className="text-base text-muted-foreground">About</p>
-            <p className="text-sm">{user?.about}</p>
+            <textarea
+              readOnly
+              className="w-full min-h-[50px] resize-none focus:outline-none"
+              defaultValue={user?.about}
+            />
+            <span className="h-px w-full bg-muted-foreground" />
+          </div>
+          <div className="flex flex-col items-start gap-2 px-6 w-full">
+            <dic className="flex items-center justify-between w-full">
+                <p className="text-base flex items-center">
+                <Images className="mr-2 size-5 text-muted-foreground" />
+                Media
+                </p>
+
+                <Button variant={"ghost"} size={"sm"} className="text-sm text-muted-foreground">
+                    100
+                    <ArrowRight/>
+                </Button>
+            </dic>
           </div>
         </div>
       </SheetContent>

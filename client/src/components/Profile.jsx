@@ -206,11 +206,13 @@ const Profile = () => {
                 </div>
               ) : (
                 <>
-                  <p className="text-base">
-                    {user?.about
+                  <textarea
+                    className="text-base resize-none min-h-[40px] w-full"
+                    value={user?.about
                       ? user?.about
                       : "Hey there! I am using ChatDock."}
-                  </p>
+                    readOnly
+                  />
                   <Edit2
                     className="w-5 h-5 text-primary cursor-pointer"
                     onClick={() => setShowAboutInput(true)}
