@@ -11,10 +11,10 @@ const Chat = ({ activeChat, setActiveChat }) => {
       style={{ backgroundImage: `url(${ChatBG})`}}
     >
       {/* Overlay for opacity effect */}
-      <div className="absolute inset-0 bg-background opacity-85 z-10"></div>
+      <div className="absolute inset-0 bg-background opacity-90 z-10 w-full"/>
 
       {/* Header */}
-      <div className="sticky top-0 z-10">
+      <div className="sticky top-0 z-20">
         <ChatHeader activeChat={activeChat} setActiveChat={setActiveChat} />
       </div>
 

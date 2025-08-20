@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useImageOverlay } from "@/context/ImageOverlayContext";
-import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Loader2, UserPlus } from "lucide-react";
 
 const SelectFriend = ({ setActive, activeChat, setActiveChat }) => {
   const { allUsers, userLoading, userFriends, onlineUsers } = useAuthStore();
-
-  const { setIsOverlayOpen, setImageData } = useImageOverlay();
 
   const [filteredFriends, setFilteredFriends] = useState(
     allUsers?.filter((u) => userFriends?.some((req) => req === u._id))
@@ -44,7 +40,7 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat }) => {
         ) : filteredFriends?.length > 0 ? (
           filteredFriends?.map((user) => (
             <button
-              className={`${activeChat === user._id && "bg-muted-foreground/10"} hover:bg-muted-foreground/10 p-3 rounded-md border`}
+              className={`${activeChat === user._id && "bg-muted-foreground/10"} hover:bg-muted-foreground/10 cursor-pointer p-3 rounded-md border`}
               key={user._id}
               onClick={() => {
                 setActiveChat((prev) => (prev === user._id ? null : user._id));
@@ -61,19 +57,8 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat }) => {
                     }
                     `}
                   />
-                  <button
-                    onClick={() => {
-                      if (user?.profilePic?.imageUrl) {
-                        setIsOverlayOpen(true);
-                        setImageData({
-                          image: user?.profilePic?.imageUrl,
-                          name: user?.fullName,
-                        });
-                      } else {
-                        toast.error("No profile photo");
-                      }
-                    }}
-                    className="size-12 object-contain cursor-pointer rounded-full overflow-hidden border-2 border-primary bg-primary/50"
+                  <div
+                    className="size-12 object-contain rounded-full overflow-hidden border-2 border-primary bg-primary/50"
                   >
                     {user?.profilePic?.imageUrl ? (
                       <img
@@ -86,7 +71,7 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat }) => {
                         {user?.fullName?.charAt(0).toUpperCase()}
                       </p>
                     )}
-                  </button>
+                  </div>
                 </div>
                 <div className="flex flex-col items-start">
                   <h3 className="text-base font-semibold">

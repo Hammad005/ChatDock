@@ -19,7 +19,7 @@ const ChatHeader = ({ activeChat, setActiveChat }) => {
   return (
     <>
     <UserDetailsSidebar open={open} setOpen={setOpen} user={chatUser}/>
-      <header className="flex items-center gap-1 lg:p-3 bg-background">
+      <header className="flex items-center gap-1 p-3 bg-background">
         <Button
           variant={"ghost"}
           size={"icon"}

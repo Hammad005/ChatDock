@@ -20,7 +20,7 @@ const Home = () => {
             <div className="col-span-2 bg-primary/10">
               <MinSidebar active={active} setActive={setActive} />
             </div>
-            <div className="col-span-10 p-3 flex flex-col h-screen gap-4">
+            <div className={`col-span-10 ${!activeChat && "p-3"}  flex flex-col h-screen gap-4`}>
               <h3 className={`text-3xl font-bold tracking-wider ${activeChat ? "hidden lg:flex" : "flex"} flex-col`}>
                 ChatDock
                 <span className="text-xs text-muted-foreground tracking-normal ">

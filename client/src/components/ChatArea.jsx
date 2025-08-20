@@ -1,12 +1,21 @@
 import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { Plus, Send } from "lucide-react";
+import { Files, Images, Plus, Send } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const ChatArea = () => {
   const [data, setData] = useState({
-    text: '',
+    text: "",
     images: [],
-  })
+    files: [],
+  });
   const textareaRef = useRef(null);
 
   const handleInput = () => {
@@ -16,17 +25,33 @@ const ChatArea = () => {
       textarea.style.height = textarea.scrollHeight + "px"; // adjust to content
     }
   };
+
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className="w-full lg:p-3">
-      <div className="flex items-end gap-2 w-full rounded-4xl bg-background border dark:border-border border-muted-foreground/50 px-3 py-2">
+    <div className="w-full p-3">
+      <div className="flex items-end gap-2 w-full rounded-4xl bg-muted border dark:border-border border-muted-foreground/50 px-3 py-2">
+      <input type="file" accept="image/*" hidden multiple/>
+      <input type="file" hidden multiple />
+
         {/* Attach button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full hover:bg-muted-foreground/30 transition-colors ease-in-out duration-300"
-        >
-          <Plus />
-        </Button>
+        <DropdownMenu open={open} onOpenChange={setOpen}>
+          <DropdownMenuTrigger>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`rounded-full hover:bg-muted-foreground/30 transition-all ease-in-out duration-300 ${
+                open && "rotate-225"
+              }`}
+            >
+              <Plus />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem><Files className="text-purple-500"/>Documents</DropdownMenuItem>
+            <DropdownMenuItem><Images className="text-blue-500"/>Photos</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         {/* Message box */}
         <textarea
@@ -38,12 +63,14 @@ const ChatArea = () => {
           style={{
             scrollbarColor: "var(--muted-foreground) transparent",
           }}
+          value={data.text}
+          onChange={(e) => setData({ ...data, text: e.target.value })}
         />
 
         {/* Send button */}
-        <Button size="icon" className="rounded-full">
+        {(data.text || data.images.length > 0 || data.files.length > 0) && <Button size="icon" className="rounded-full">
           <Send className="h-5 w-5" />
-        </Button>
+        </Button>}
       </div>
     </div>
   );
