@@ -1,8 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
 import { Plus, Send } from "lucide-react";
 
 const ChatArea = () => {
+  const [data, setData] = useState({
+    text: '',
+    images: [],
+  })
   const textareaRef = useRef(null);
 
   const handleInput = () => {

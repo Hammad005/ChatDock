@@ -20,7 +20,7 @@ export const getMessages = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
     try {
-        const { text, images } = req.body;
+        const { text, images, files } = req.body;
         const { id: receiverId } = req.params;
         const myId = req.user._id;
 
@@ -43,11 +43,31 @@ export const sendMessage = async (req, res) => {
             }
         }
 
+        let uploadedFiles = [];
+
+        if (files && files.length > 0) {
+            for (const file of files) {
+                const cloudinaryResponse = await cloudinary.uploader.upload(file, {
+                    folder: "ChatDock/messages",
+                });
+
+                if (!cloudinaryResponse || cloudinaryResponse.error) {
+                    throw new Error(cloudinaryResponse.error || "Unknown Cloudinary Error");
+                }
+
+                uploadedFiles.push({
+                    fileId: cloudinaryResponse.public_id,
+                    fileUrl: cloudinaryResponse.secure_url,
+                });
+            }
+        }
+
         const newMessage = new Message({
             senderId: myId,
             receiverId,
             text,
             images: uploadedImages,
+            files: uploadedFiles
         });
 
         await newMessage.save();

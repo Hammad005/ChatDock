@@ -23,6 +23,14 @@ const messageScheema = new mongoose.Schema(
                 type: String,
             }
         }],
+        files: [{
+            fileId: {
+                type: String,
+            },
+            fileUrl: {
+                type: String,
+            }
+        }]
     },
     { timestamps: true }
 );

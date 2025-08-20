@@ -6,24 +6,20 @@ import ChatBG from "../assets/chatbg.png";
 
 const Chat = ({ activeChat, setActiveChat }) => {
   return (
-    <div className="relative flex flex-col w-full h-screen">
-      {/* Full page background */}
-      <div className="absolute inset-0 -z-10">
-        <img
-          src={ChatBG}
-          alt="loading"
-          draggable={false}
-          className="w-full h-full object-cover opacity-10"
-        />
-      </div>
+    <div
+      className="flex flex-col w-full h-screen bg-fixed bg-cover bg-center relative"
+      style={{ backgroundImage: `url(${ChatBG})`}}
+    >
+      {/* Overlay for opacity effect */}
+      <div className="absolute inset-0 bg-background opacity-85 z-10"></div>
 
       {/* Header */}
       <div className="sticky top-0 z-10">
         <ChatHeader activeChat={activeChat} setActiveChat={setActiveChat} />
       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+      {/* Messages (scrollable) */}
+      <div className="h-screen px-4 z-10 overflow-y-auto overflow-x-hidden">
         <ChatContainer
           activeChat={activeChat}
           setActiveChat={setActiveChat}

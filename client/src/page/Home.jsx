@@ -59,7 +59,7 @@ const Home = () => {
         </div>
 
         {/* Right Sticky Section */}
-        <div className="lg:col-span-8 lg:flex hidden bg-primary/10 backdrop-blur-md sticky top-0 h-screen">
+        <div className={`lg:col-span-8 lg:flex hidden ${activeChat ? "bg-background" : "bg-primary/10"} backdrop-blur-md sticky top-0 h-screen`}>
           {!activeChat ? (
             <div className="flex flex-col items-center justify-center gap-2">
               <div className="flex items-center justify-center gap-2">
