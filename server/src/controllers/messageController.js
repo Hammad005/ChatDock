@@ -20,7 +20,8 @@ export const getMessages = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
     try {
-        const { text, images, files, id: receiverId } = req.body;
+        const { text, images, files } = req.body;
+        const { id: receiverId } = req.params;
         const myId = req.user._id;
 
         let uploadedImages = [];

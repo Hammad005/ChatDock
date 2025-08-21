@@ -13,11 +13,11 @@ const Home = () => {
   const [activeChat, setActiveChat] = useState(null);
 
   const [data, setData] = useState({
-    id: activeChat,
     text: "",
     images: [],
     files: [],
   });
+  const [fileName, setFileName] = useState([]);
   return (
     <>
       <div className="grid lg:grid-cols-12">
@@ -55,6 +55,7 @@ const Home = () => {
                         setActive={setActive}
                         activeChat={activeChat}
                         setActiveChat={setActiveChat}
+                        setData={setData}
                       />
                     </div>
                     <div
@@ -65,6 +66,8 @@ const Home = () => {
                         setActiveChat={setActiveChat}
                         chatData={data}
                         setChatData={setData}
+                        fileName={fileName}
+                        setFileName={setFileName}
                       />
                     </div>
                   </>
@@ -115,6 +118,8 @@ const Home = () => {
                 setActiveChat={setActiveChat}
                 chatData={data}
                 setChatData={setData}
+                fileName={fileName}
+                setFileName={setFileName}
               />
             </div>
           )}

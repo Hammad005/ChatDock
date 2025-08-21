@@ -4,7 +4,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "./ui/button";
 import { Loader2, UserPlus } from "lucide-react";
 
-const SelectFriend = ({ setActive, activeChat, setActiveChat }) => {
+const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
   const { allUsers, userLoading, userFriends, onlineUsers } = useAuthStore();
 
   const [filteredFriends, setFilteredFriends] = useState(
@@ -44,6 +44,11 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat }) => {
               key={user._id}
               onClick={() => {
                 setActiveChat((prev) => (prev === user._id ? null : user._id));
+                setData({
+                  text: "",
+                  images: [],
+                  files: [],
+                })
               }}
             >
               <div className="flex items-center gap-4">

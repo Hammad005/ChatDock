@@ -9,8 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
-const ChatArea = ({ chatData, setChatData }) => {
-  const [fileName, setFileName] = useState([]);
+const ChatArea = ({ chatData, setChatData, fileName, setFileName }) => {
 
   const textareaRef = useRef(null);
   const filesUploadRef = useRef(null);
@@ -110,7 +109,7 @@ const ChatArea = ({ chatData, setChatData }) => {
       ...prev,
       files: [...prev.files, ...uploadedFiles],
     }));
-    setFileName([...fileName, ...files.map((file) => file.name.slice(0, 20))]);
+    setFileName([...fileName, ...files.map((file) => file.name.length > 20 ? file.name.slice(0, 20) + "..." : file.name)]);
 
     // ✅ Clear input so re-uploads always work
     e.target.value = "";
@@ -118,7 +117,7 @@ const ChatArea = ({ chatData, setChatData }) => {
 
   return (
     <div className="w-full p-3">
-      <div className="flex flex-col gap-2 w-full rounded-4xl bg-muted border dark:border-border border-muted-foreground/50 px-3 py-2">
+      <div className="flex flex-col gap-2 w-full rounded-4xl bg-muted border dark:border-border border-muted-foreground/50 px-3 py-2 overflow-y-auto max-h-[600px]">
         {chatData.images.length > 0 && (
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 w-fit">
             {chatData.images.map((image, index) => (
@@ -145,11 +144,11 @@ const ChatArea = ({ chatData, setChatData }) => {
           </div>
         )}
         {chatData.files.length > 0 && (
-          <div className="grid grid-cols-3  gap-2 w-fit">
+          <div className="grid md:grid-cols-3  gap-2 w-full">
             {chatData.files.map((files, index) => (
               <div
                 key={index}
-                className="flex items-center gap-2 w-full border border-muted-foreground p-4 rounded-lg whitespace-nowrap"
+                className="flex items-center justify-between gap-2 w-full border border-muted-foreground p-4 rounded-lg whitespace-nowrap"
               >
                 <FileIcon className="w-6 h-6 text-purple-500" />
                 <span className="text-sm">{fileName[index]}</span>
