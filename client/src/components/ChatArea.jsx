@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
-import { FileIcon, Files, Images, Plus, Send, X } from "lucide-react";
+import { FileIcon, Files, Images, Loader, Plus, Send, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,8 +8,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
+import { useChatStore } from "@/store/useChatStore";
 
-const ChatArea = ({ chatData, setChatData, fileName, setFileName }) => {
+const ChatArea = ({ chatData, setChatData, fileName, setFileName, handleSubmit }) => {
+
+  const {messagesLoading} = useChatStore();
 
   const textareaRef = useRef(null);
   const filesUploadRef = useRef(null);
@@ -236,8 +239,13 @@ const ChatArea = ({ chatData, setChatData, fileName, setFileName }) => {
           {(chatData.text ||
             chatData.images.length > 0 ||
             chatData.files.length > 0) && (
-            <Button size="icon" className="rounded-full">
-              <Send className="h-5 w-5" />
+            <Button size="icon" className="rounded-full" onClick={async() => {
+              const res = await handleSubmit()
+              if (res?.success && textareaRef.current) {
+                textareaRef.current.style.height = "40px";
+              }
+            }} disabled={messagesLoading}>
+              {messagesLoading ? <Loader className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
             </Button>
           )}
         </div>

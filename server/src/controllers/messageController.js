@@ -3,16 +3,11 @@ import Message from "../models/Message.js";
 
 export const getMessages = async (req, res) => {
     try {
-        const { id: userToChatId } = req.params;
         const myId = req.user._id;
 
-        const messages = await Message.find({
-            $or: [
-                { senderId: myId, receiverId: userToChatId },
-                { senderId: userToChatId, receiverId: myId },
-            ]
-        });
-        res.status(200).json({ success: true, messages });
+        const sendedMessages = await Message.find({ senderId: myId}).sort({ createdAt: -1 });
+        const receivedMessages = await Message.find({ receiverId: myId}).sort({ createdAt: -1 });
+        res.status(200).json({ success: true, sendedMessages, receivedMessages });
     } catch (error) {
         res.status(500).json({ error: error.message || "Internal Server Error" });
     }
@@ -21,6 +16,7 @@ export const getMessages = async (req, res) => {
 export const sendMessage = async (req, res) => {
     try {
         const { text, images, files } = req.body;
+        
         const { id: receiverId } = req.params;
         const myId = req.user._id;
 
@@ -29,7 +25,7 @@ export const sendMessage = async (req, res) => {
         if (images && images.length > 0) {
             for (const image of images) {
                 const cloudinaryResponse = await cloudinary.uploader.upload(image, {
-                    folder: "ChatDock/messages",
+                    folder: "ChatDock/messages/images",
                 });
 
                 if (!cloudinaryResponse || cloudinaryResponse.error) {
@@ -47,8 +43,10 @@ export const sendMessage = async (req, res) => {
 
         if (files && files.length > 0) {
             for (const file of files) {
-                const cloudinaryResponse = await cloudinary.uploader.upload(file, {
-                    folder: "ChatDock/messages",
+                const cloudinaryResponse = await cloudinary.uploader.upload(file,
+                {
+                    folder: "ChatDock/messages/files",
+                    resource_type: "auto",
                 });
 
                 if (!cloudinaryResponse || cloudinaryResponse.error) {

@@ -4,7 +4,7 @@ import ChatContainer from "./ChatContainer";
 import ChatArea from "./ChatArea";
 import ChatBG from "../assets/chatbg.png";
 
-const Chat = ({ activeChat, setActiveChat, chatData, setChatData, fileName, setFileName }) => {
+const Chat = ({ activeChat, setActiveChat, chatData, setChatData, fileName, setFileName, handleSubmit }) => {
   return (
     <div
       className="flex flex-col w-full h-screen bg-fixed bg-cover bg-center relative"
@@ -31,6 +31,7 @@ const Chat = ({ activeChat, setActiveChat, chatData, setChatData, fileName, setF
         <ChatArea
         chatData={chatData} setChatData={setChatData}
         fileName={fileName} setFileName={setFileName}
+        handleSubmit={handleSubmit}
         />
       </div>
     </div>

@@ -7,8 +7,10 @@ import Suggestions from "@/components/Suggestions";
 import Friends from "@/components/Friends";
 import SelectFriend from "@/components/SelectFriend";
 import Chat from "@/components/Chat";
+import { useChatStore } from "@/store/useChatStore";
 
 const Home = () => {
+  const {sendMessage} = useChatStore();
   const [active, setActive] = useState("Home");
   const [activeChat, setActiveChat] = useState(null);
 
@@ -18,6 +20,16 @@ const Home = () => {
     files: [],
   });
   const [fileName, setFileName] = useState([]);
+
+  const handleSubmit = async () => {
+    const res = await sendMessage(activeChat, data);
+    if (res?.success) {
+      setData({ text: "", images: [], files: [] });
+      setFileName([]);
+    }
+
+    return {success: true};
+  };
   return (
     <>
       <div className="grid lg:grid-cols-12">
@@ -68,6 +80,7 @@ const Home = () => {
                         setChatData={setData}
                         fileName={fileName}
                         setFileName={setFileName}
+                        handleSubmit={handleSubmit}
                       />
                     </div>
                   </>
@@ -120,6 +133,7 @@ const Home = () => {
                 setChatData={setData}
                 fileName={fileName}
                 setFileName={setFileName}
+                handleSubmit={handleSubmit}
               />
             </div>
           )}

@@ -6,7 +6,7 @@ const messagesRoute = express.Router();
 
 messagesRoute.use(protectRoute);
 
-messagesRoute.get('/getMessages/:id', getMessages);
+messagesRoute.get('/getMessages', getMessages);
 messagesRoute.post('/sendMessage/:id', sendMessage);
 
 export default messagesRoute;

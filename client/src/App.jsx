@@ -7,6 +7,7 @@ import Loading from "./components/Loading";
 import { Toaster } from "@/components/ui/sonner";
 import ImageOverlay from "./components/ImageOverlay";
 import { useRequestStore } from "./store/useRequestStore";
+import { useChatStore } from "./store/useChatStore";
 
 const protectRoutes = (condition, children, naivagate) => {
   return condition ? children : <Navigate to={naivagate} />;
@@ -14,6 +15,7 @@ const protectRoutes = (condition, children, naivagate) => {
 const App = () => {
   const { authLoading, checkAuth, user, progress, getAllUsers } = useAuthStore();
   const { getMyRequests } = useRequestStore();
+  const {getMyMessages} = useChatStore();
 
   useEffect(() => {
     checkAuth();
@@ -23,8 +25,9 @@ const App = () => {
     if (user) {
       getAllUsers();
       getMyRequests();
+      getMyMessages();
     }
-  }, [user, getAllUsers, getMyRequests]);
+  }, [user, getAllUsers, getMyRequests, getMyMessages]);
 
   if (authLoading) return <Loading progress={progress} />;
   return (
