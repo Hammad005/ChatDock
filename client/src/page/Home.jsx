@@ -11,6 +11,13 @@ import Chat from "@/components/Chat";
 const Home = () => {
   const [active, setActive] = useState("Home");
   const [activeChat, setActiveChat] = useState(null);
+
+  const [data, setData] = useState({
+    id: activeChat,
+    text: "",
+    images: [],
+    files: [],
+  });
   return (
     <>
       <div className="grid lg:grid-cols-12">
@@ -20,8 +27,16 @@ const Home = () => {
             <div className="col-span-2 bg-primary/10">
               <MinSidebar active={active} setActive={setActive} />
             </div>
-            <div className={`col-span-10 ${!activeChat && "p-3"}  flex flex-col h-screen gap-4`}>
-              <h3 className={`text-3xl font-bold tracking-wider ${activeChat ? "hidden lg:flex" : "flex"} flex-col`}>
+            <div
+              className={`col-span-10 ${
+                !activeChat && "p-3"
+              }  flex flex-col h-screen gap-4`}
+            >
+              <h3
+                className={`text-3xl font-bold tracking-wider ${
+                  activeChat ? "hidden lg:flex" : "flex"
+                } flex-col`}
+              >
                 ChatDock
                 <span className="text-xs text-muted-foreground tracking-normal ">
                   {active}
@@ -48,6 +63,8 @@ const Home = () => {
                       <Chat
                         activeChat={activeChat}
                         setActiveChat={setActiveChat}
+                        chatData={data}
+                        setChatData={setData}
                       />
                     </div>
                   </>
@@ -59,7 +76,11 @@ const Home = () => {
         </div>
 
         {/* Right Sticky Section */}
-        <div className={`lg:col-span-8 lg:flex hidden ${activeChat ? "bg-background" : "bg-primary/10"} backdrop-blur-md sticky top-0 h-screen`}>
+        <div
+          className={`lg:col-span-8 lg:flex hidden ${
+            activeChat ? "bg-background" : "bg-primary/10"
+          } backdrop-blur-md sticky top-0 h-screen`}
+        >
           {!activeChat ? (
             <div className="flex flex-col items-center justify-center gap-2">
               <div className="flex items-center justify-center gap-2">
@@ -89,7 +110,12 @@ const Home = () => {
             </div>
           ) : (
             <div className="h-full overflow-y-auto overflow-x-hidden w-full">
-              <Chat activeChat={activeChat} setActiveChat={setActiveChat} />
+              <Chat
+                activeChat={activeChat}
+                setActiveChat={setActiveChat}
+                chatData={data}
+                setChatData={setData}
+              />
             </div>
           )}
         </div>
