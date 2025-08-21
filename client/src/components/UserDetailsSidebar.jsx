@@ -9,9 +9,16 @@ import { useImageOverlay } from "@/context/ImageOverlayContext";
 import { toast } from "sonner";
 import { ArrowRight, Images } from "lucide-react";
 import { Button } from "./ui/button";
+import { useChatStore } from "@/store/useChatStore";
 
 const UserDetailsSidebar = ({ open, setOpen, user }) => {
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
+  const { sendedMessages, receivedMessages } = useChatStore();
+
+  const merged = [
+    ...sendedMessages.filter((msg) => msg?.receiverId === user?._id),
+    ...receivedMessages.filter((msg) => msg?.senderId === user?._id),
+  ];
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -66,17 +73,37 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
             <span className="h-px w-full bg-muted-foreground" />
           </div>
           <div className="flex flex-col items-start gap-2 px-6 w-full">
-            <dic className="flex items-center justify-between w-full">
-                <p className="text-base flex items-center">
+            <div className="flex items-center justify-between w-full">
+              <p className="text-base flex items-center">
                 <Images className="mr-2 size-5 text-muted-foreground" />
                 Media
-                </p>
+              </p>
 
-                <Button variant={"ghost"} size={"sm"} className="text-sm text-muted-foreground">
-                    100
-                    <ArrowRight/>
-                </Button>
-            </dic>
+              <Button
+                variant={"ghost"}
+                size={"sm"}
+                className="text-sm text-muted-foreground"
+              >
+                {merged
+                  ?.map((msg) => msg?.images?.length)
+                  .reduce((a, b) => a + b, 0)}
+                <ArrowRight />
+              </Button>
+            </div>
+            <div className="grid grid-cols-3 gap-2 w-full">
+              {merged?.map((msg) =>
+                msg.images
+                  ?.slice(0, 2)
+                  .map((image) => (
+                    <img
+                      src={image.imageUrl}
+                      alt="image"
+                      draggable={false}
+                      className="w-[100px] h-[100px] object-cover object-top rounded-lg"
+                    />
+                  ))
+              )}
+            </div>
           </div>
         </div>
       </SheetContent>

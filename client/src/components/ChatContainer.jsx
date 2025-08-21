@@ -39,14 +39,14 @@ const ChatContainer = ({ activeChat }) => {
                 }`}
               >
                 <div
-                  className={`md:max-w-[80%] px-3 py-2 rounded-2xl text-sm break-words ${
+                  className={`md:max-w-[80%] p-3 rounded-2xl text-sm break-words ${
                     isMyMessage
                       ? "bg-primary text-white rounded-br-none"
                       : "bg-background border border-muted-foreground/30 rounded-bl-none"
                   }`}
                 >
                   {msg.images.length > 0 && (
-                    <div className="grid grid-cols-2 gap-2 mb-2">
+                    <div className={`${msg.images.length > 1 ? "grid" : "flex"} grid-cols-2 gap-2 mb-2`}>
                       {(msg.images.length > 4 ? msg.images.slice(0,
                       4).map((image, index) => (
                       <div key={index} className="relative">
