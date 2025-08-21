@@ -15,6 +15,7 @@ const AuthPage = () => {
               <div className="w-[40px] h-auto object-contain">
                 <img
                   src={Logo}
+                  draggable={false}
                   alt="loading"
                   className="w-full h-full object-cover"
                 />
@@ -32,7 +33,7 @@ const AuthPage = () => {
           </div>
         </div>
         <div className="w-full bg-primary/10 backdrop-blur-md h-screen lg:flex flex-col gap-2 items-center justify-center hidden">
-        <img src={AuthPhoto} alt="auth" className="w-auto h-[400px]" />
+        <img src={AuthPhoto} draggable={false} alt="auth" className="w-auto h-[400px]" />
         <p className="text-xs text-muted-foreground">"Log in to keep the conversation going, or sign up to start your first chat today."</p>
         </div>
       </div>

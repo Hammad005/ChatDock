@@ -34,6 +34,7 @@ const ChatHeader = ({ activeChat, setActiveChat }) => {
               <img
                 src={chatUser?.profilePic?.imageUrl}
                 alt="loading"
+                draggable={false}
                 className="w-full h-full object-cover object-top"
               />
             ) : (

@@ -77,7 +77,7 @@ const Login = ({ setActive }) => {
         onClick={handleGoogleLogin}
         disabled={userLoading}
       >
-        <img src={GoogleLogo} alt="Google" className="w-4 h-4" />
+        <img src={GoogleLogo} draggable={false} alt="Google" className="w-4 h-4" />
         Continue with Google
       </Button>
 

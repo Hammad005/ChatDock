@@ -41,7 +41,7 @@ const Home = () => {
             </div>
             <div
               className={`col-span-10 ${
-                !activeChat && "p-3"
+                activeChat ? "lg:p-3 p-0" : "p-3"
               }  flex flex-col h-screen gap-4`}
             >
               <h3
@@ -104,6 +104,7 @@ const Home = () => {
                   <img
                     src={Logo}
                     alt="loading"
+                    draggable={false}
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -116,6 +117,7 @@ const Home = () => {
               <img
                 src={HomePhoto}
                 alt="HomePhoto"
+                draggable={false}
                 className="w-[500px] h-auto"
               />
               <p className="text-sm w-1/2 text-center">

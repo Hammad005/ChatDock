@@ -3,8 +3,8 @@ import { toast } from "sonner";
 import { create } from "zustand";
 
 export const useChatStore = create((set) => ({
-    sendedMessages: null,
-    receivedMessages: null,
+    sendedMessages: [],
+    receivedMessages: [],
     messagesLoading: false,
 
     getMyMessages: async () => {
@@ -23,9 +23,10 @@ export const useChatStore = create((set) => ({
         try {
             const res = await axios.post(`/messages/sendMessage/${id}`, data);
             set((state) => ({
-                sendedMessages: [res.data.newMessage, ...state.sendedMessages],
+                sendedMessages: [res.data, ...state.sendedMessages],
                 messagesLoading: false,
             }));
+            
             return { success: true }
         } catch (error) {
             console.log(error);

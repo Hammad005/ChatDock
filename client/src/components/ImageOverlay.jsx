@@ -15,6 +15,7 @@ const ImageOverlay = () => {
               <img
                 src={imageData.image}
                 alt="loading"
+                draggable={false}
                 className="w-full h-full object-cover object-top"
               />
             </div>
@@ -33,6 +34,7 @@ const ImageOverlay = () => {
           <img
             src={imageData.image}
             alt="image"
+            draggable={false}
             className="w-full h-full object-contain"
           />
         </div>

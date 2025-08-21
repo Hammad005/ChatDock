@@ -76,6 +76,7 @@ const Profile = () => {
                   <img
                     src={user?.profilePic?.imageUrl}
                     alt="loading"
+                    draggable={false}
                     className="w-full h-full object-cover object-top"
                   />
                 ) : (

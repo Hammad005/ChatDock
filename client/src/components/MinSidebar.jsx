@@ -19,7 +19,7 @@ const MinSidebar = ({ active, setActive }) => {
     <>
       <div className="flex flex-col items-center justify-between py-3 gap-4 h-full">
         <div className="flex flex-col items-center gap-4">
-          <img src={Logo} alt="loading" className="w-auto h-[40px]" />
+          <img src={Logo} draggable={false} alt="loading" className="w-auto h-[40px]" />
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
@@ -105,6 +105,7 @@ const MinSidebar = ({ active, setActive }) => {
                   <img
                     src={user?.profilePic?.imageUrl}
                     alt="loading"
+                    draggable={false}
                     className="w-full h-full object-cover object-top"
                   />
                 ) : (

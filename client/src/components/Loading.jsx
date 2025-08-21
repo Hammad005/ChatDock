@@ -9,7 +9,7 @@ const Loading = ({progress}) => {
     <div className='w-full h-screen flex flex-col justify-between items-center'>
       <div className='flex flex-col items-center justify-center gap-3 w-full h-full'>
         <div className='w-[60px] h-auto object-contain'>
-            <img src={Logo} alt="loading" className='w-full h-full object-cover'/>
+            <img src={Logo} draggable={false} alt="loading" className='w-full h-full object-cover'/>
         </div>
         <h3 className='text-xl tracking-wider'>ChatDock</h3>
         <div className='md:w-1/6 w-1/2 mt-4 '>

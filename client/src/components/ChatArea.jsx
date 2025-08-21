@@ -128,9 +128,11 @@ const ChatArea = ({ chatData, setChatData, fileName, setFileName, handleSubmit }
                 <img
                   src={image}
                   alt="loading"
+                  draggable={false}
                   className="w-24 h-24 object-cover rounded-lg"
                 />
                 <Button
+                disabled={messagesLoading}
                   size="icon"
                   className="absolute top-0 right-0"
                   onClick={() =>
@@ -156,6 +158,7 @@ const ChatArea = ({ chatData, setChatData, fileName, setFileName, handleSubmit }
                 <FileIcon className="w-6 h-6 text-purple-500" />
                 <span className="text-sm">{fileName[index]}</span>
                 <Button
+                disabled={messagesLoading}
                   variant={"outline"}
                   size="icon"
                   onClick={() => {
