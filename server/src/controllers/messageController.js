@@ -5,8 +5,8 @@ export const getMessages = async (req, res) => {
     try {
         const myId = req.user._id;
 
-        const sendedMessages = await Message.find({ senderId: myId}).sort({ createdAt: -1 });
-        const receivedMessages = await Message.find({ receiverId: myId}).sort({ createdAt: -1 });
+        const sendedMessages = await Message.find({ senderId: myId});
+        const receivedMessages = await Message.find({ receiverId: myId});
         res.status(200).json({ success: true, sendedMessages, receivedMessages });
     } catch (error) {
         res.status(500).json({ error: error.message || "Internal Server Error" });

@@ -3,12 +3,18 @@ import { MailWarning } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect, useRef, useState } from "react";
 import { useMediaOverlay } from "@/context/MediaOverlayContext";
+import { Link } from "react-router-dom";
 
 const ChatContainer = ({ activeChat }) => {
   const [readMore, setReadMore] = useState(null);
   const { sendedMessages, receivedMessages } = useChatStore();
-  const { setMediaData, setIsMediaOverlayOpen, setMediaIndex, setMessageIndex } = useMediaOverlay()
-  const { user } = useAuthStore();
+  const {
+    setMediaData,
+    setIsMediaOverlayOpen,
+    setMediaIndex,
+    setMessageIndex,
+  } = useMediaOverlay();
+  const { user, allUsers } = useAuthStore();
 
   const messagesEndRef = useRef(null);
 
@@ -16,15 +22,18 @@ const ChatContainer = ({ activeChat }) => {
     ...sendedMessages.filter((msg) => msg?.receiverId === activeChat),
     ...receivedMessages.filter((msg) => msg?.senderId === activeChat),
   ];
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
 
   const filterChat = merged.sort(
     (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
   );
 
+  const userChat = allUsers?.find((u) => u._id === activeChat);
+
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [sendedMessages]);
+  }, [sendedMessages, activeChat]);
 
   return (
     <>
@@ -41,75 +50,129 @@ const ChatContainer = ({ activeChat }) => {
                 }`}
               >
                 <div
-                  className={`md:max-w-[80%] p-3 rounded-2xl text-sm break-words ${
-                    isMyMessage
-                      ? "bg-primary text-white rounded-br-none"
-                      : "bg-background border border-muted-foreground/30 rounded-bl-none"
-                  }`}
+                  className={`flex flex-col justify-start gap-2 ${
+                    isMyMessage ? "items-end" : "items-start"
+                  } w-full`}
                 >
-                  {msg.images.length > 0 && (
-                    <div className={`${msg.images.length > 1 ? "grid" : "flex"} grid-cols-2 gap-2 mb-2`}>
-                      {(msg.images.length > 4 ? msg.images.slice(0,
-                      4).map((image, index) => (
-                      <button key={index} className="relative cursor-pointer" onClick={() => {
-                        setMediaData(filterChat)
-                        setMessageIndex(i)
-                        setMediaIndex(index)
-                        setIsMediaOverlayOpen(true)
-                      }}>
-                        <img
-                          src={image.imageUrl}
-                          alt="image"
-                          draggable={false}
-                          className="w-full sm:h-[300px] h-full object-cover object-top rounded-lg"
-                        />
-                        {index === 3 && (
-                          <div className="absolute cursor-pointer top-0 left-0 w-full h-full bg-black/80 flex items-center justify-center rounded-lg">
-                            <p className="text-sm text-white">
-                              +{msg.images.length - 4}
-                            </p>{" "}
-                          </div>
-                        )}
-                      </button>
-                      )) : msg.images.map((image, index) => (
-                        <button key={index} className="cursor-pointer" onClick={() => {
-                          setMediaData(filterChat);
-                          setMessageIndex(i);
-                          setMediaIndex(index);
-                          setIsMediaOverlayOpen(true);
-                          }}>
-                          <img
-                            src={image.imageUrl}
-                            draggable={false}
-                            alt="image"
-                            className="w-full sm:h-[300px] h-full object-cover object-top rounded-lg"
-                          />
-                        </button>
-                      )))}
+                  {!isMyMessage && (
+                    <div className="flex items-center gap-2">
+                    <div className="size-7 object-contain rounded-full overflow-hidden border-2 border-primary">
+                      <img
+                        src={userChat?.profilePic?.imageUrl}
+                        alt="prfoile"
+                        draggable={false}
+                        className="w-full h-full object-cover object-top"
+                      />
+                    </div>
+                    <h3 className="text-xs font-semibold">
+                      {userChat?.fullName}
+                    </h3>
                     </div>
                   )}
-                  <p className="whitespace-pre-wrap">
-                    {msg.text.length > 750 && readMore !== msg._id ? (
-                      <>
-                        {msg.text.slice(0, 750)}
-                        <span>...</span>
-                        <button
-                          className="hover:underline ml-1 font-semibold cursor-pointer"
-                          onClick={() => setReadMore(msg._id)}
-                        >
-                          Read more
-                        </button>
-                      </>
-                    ) : (
-                      msg.text
+                  <div
+                    className={`md:max-w-[80%] p-3 rounded-2xl text-sm break-words ${
+                      isMyMessage
+                        ? "bg-primary text-white rounded-tr-none"
+                        : "bg-background border border-muted-foreground/30 rounded-tl-none"
+                    }`}
+                  >
+                    {msg.images.length > 0 && (
+                      <div
+                        className={`${
+                          msg.images.length > 1 ? "grid" : "flex"
+                        } grid-cols-2 gap-2 mb-2`}
+                      >
+                        {msg.images.length > 4
+                          ? msg.images.slice(0, 4).map((image, index) => (
+                              <button
+                                key={index}
+                                className="relative cursor-pointer"
+                                onClick={() => {
+                                  setMediaData(filterChat);
+                                  setMessageIndex(i);
+                                  setMediaIndex(index);
+                                  setIsMediaOverlayOpen(true);
+                                }}
+                              >
+                                <img
+                                  src={image.imageUrl}
+                                  alt="image"
+                                  draggable={false}
+                                  className="w-full sm:h-[300px] h-full object-cover object-top rounded-lg"
+                                />
+                                {index === 3 && (
+                                  <div className="absolute cursor-pointer top-0 left-0 w-full h-full bg-black/80 flex items-center justify-center rounded-lg">
+                                    <p className="text-sm text-white">
+                                      +{msg.images.length - 4}
+                                    </p>{" "}
+                                  </div>
+                                )}
+                              </button>
+                            ))
+                          : msg.images.map((image, index) => (
+                              <button
+                                key={index}
+                                className="cursor-pointer"
+                                onClick={() => {
+                                  setMediaData(filterChat);
+                                  setMessageIndex(i);
+                                  setMediaIndex(index);
+                                  setIsMediaOverlayOpen(true);
+                                }}
+                              >
+                                <img
+                                  src={image.imageUrl}
+                                  draggable={false}
+                                  alt="image"
+                                  className="w-full sm:h-[300px] h-full object-cover object-top rounded-lg"
+                                />
+                              </button>
+                            ))}
+                      </div>
                     )}
-                  </p>
-                </div>
-                <p className="text-xs text-muted-foreground">
+                    <p className="whitespace-pre-wrap">
+                      {msg.text.length > 750 && readMore !== msg._id ? (
+                        <>
+                          {msg.text
+                            .slice(0, 750)
+                            .replace(
+                              urlRegex,
+                              (url) =>
+                                `<Link to="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-500 underline">${url}</Link>`
+                            )}
+                          <span>...</span>
+                          <button
+                            className="hover:underline ml-1 font-semibold cursor-pointer"
+                            onClick={() => setReadMore(msg._id)}
+                          >
+                            Read more
+                          </button>
+                        </>
+                      ) : (
+                        msg.text.split(urlRegex).map((part, i) =>
+                          urlRegex.test(part) ? (
+                            <Link
+                              key={i}
+                              to={part}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline"
+                            >
+                              {part}
+                            </Link>
+                          ) : (
+                            part
+                          )
+                        )
+                      )}
+                    </p>
+                <p className="text-[10px] text-muted-foreground text-end mt-2">
                   {new Date(msg.createdAt).toDateString() +
                     " - " +
                     new Date(msg.createdAt).toLocaleTimeString()}
                 </p>
+                  </div>
+                </div>
               </div>
             );
           })}

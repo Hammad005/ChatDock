@@ -20,6 +20,10 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
     ...receivedMessages.filter((msg) => msg?.senderId === user?._id),
   ];
 
+  const filterChat = merged.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent>
@@ -81,21 +85,28 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
 
               <Button
                 variant={"ghost"}
+                disabled={
+                  merged
+                    ?.map((msg) => msg?.images?.length)
+                    .reduce((a, b) => a + b, 0) === 0
+                }
                 size={"sm"}
                 className="text-sm text-muted-foreground"
               >
-                {merged
+                {filterChat
                   ?.map((msg) => msg?.images?.length)
                   .reduce((a, b) => a + b, 0)}
                 <ArrowRight />
               </Button>
             </div>
             <div className="grid grid-cols-3 gap-2 w-full">
-              {merged?.map((msg) =>
-                msg.images
-                  ?.slice(0, 2)
-                  .map((image) => (
+              {filterChat?.map((msg) =>
+                msg?.images
+                  ?.map((image) => [image])
+                  .reverse()
+                  .map(([image, index]) => (
                     <img
+                      key={image._id || `${msg._id}-${index}`}
                       src={image.imageUrl}
                       alt="image"
                       draggable={false}
