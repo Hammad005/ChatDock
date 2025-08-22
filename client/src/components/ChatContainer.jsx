@@ -61,7 +61,7 @@ const ChatContainer = ({ activeChat }) => {
                           src={image.imageUrl}
                           alt="image"
                           draggable={false}
-                          className="w-full lg:h-[300px] h-full object-cover object-top rounded-lg"
+                          className="w-full sm:h-[300px] h-full object-cover object-top rounded-lg"
                         />
                         {index === 3 && (
                           <div className="absolute cursor-pointer top-0 left-0 w-full h-full bg-black/80 flex items-center justify-center rounded-lg">
@@ -82,7 +82,7 @@ const ChatContainer = ({ activeChat }) => {
                             src={image.imageUrl}
                             draggable={false}
                             alt="image"
-                            className="w-full lg:h-[300px] h-full object-cover object-top rounded-lg"
+                            className="w-full sm:h-[300px] h-full object-cover object-top rounded-lg"
                           />
                         </button>
                       )))}
