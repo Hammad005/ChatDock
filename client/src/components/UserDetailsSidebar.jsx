@@ -100,20 +100,38 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
               </Button>
             </div>
             <div className="grid grid-cols-3 gap-2 w-full">
-              {filterChat?.map((msg) =>
-                msg?.images
-                  ?.map((image) => [image])
-                  .reverse()
-                  .map(([image, index]) => (
+              {filterChat?.map((msg) => {
+                const images = msg?.images;
+
+                if (images?.length === 1) {
+                  // show only first image
+                  return (
                     <img
-                      key={image._id || `${msg._id}-${index}`}
-                      src={image.imageUrl}
+                      key={images[0]._id || `${msg._id}-0`}
+                      src={images[0].imageUrl}
                       alt="image"
                       draggable={false}
                       className="w-[100px] h-[100px] object-cover object-top rounded-lg"
                     />
-                  ))
-              )}
+                  );
+                }
+
+                return images?.length > 3
+                  ? images
+                      .slice()
+                      .reverse()
+                      .slice(0, 1)
+                      .map((image, index) => (
+                        <img
+                          key={image._id || `${msg._id}-${index}`}
+                          src={image.imageUrl}
+                          alt="image"
+                          draggable={false}
+                          className="w-[100px] h-[100px] object-cover object-top rounded-lg"
+                        />
+                      ))
+                  : null;
+              })}
             </div>
           </div>
         </div>
