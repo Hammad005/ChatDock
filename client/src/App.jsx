@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import ImageOverlay from "./components/ImageOverlay";
 import { useRequestStore } from "./store/useRequestStore";
 import { useChatStore } from "./store/useChatStore";
+import MediaOverlay from "./components/MediaOverlay";
 
 const protectRoutes = (condition, children, naivagate) => {
   return condition ? children : <Navigate to={naivagate} />;
@@ -41,6 +42,7 @@ const App = () => {
       </Routes>
       <Toaster position="top-center" />
       <ImageOverlay />
+      <MediaOverlay/>
     </>
   );
 };

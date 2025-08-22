@@ -2,10 +2,12 @@ import { useChatStore } from "@/store/useChatStore";
 import { MailWarning } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect, useRef, useState } from "react";
+import { useMediaOverlay } from "@/context/MediaOverlayContext";
 
 const ChatContainer = ({ activeChat }) => {
   const [readMore, setReadMore] = useState(null);
   const { sendedMessages, receivedMessages } = useChatStore();
+  const { setMediaData, setIsMediaOverlayOpen, setMediaIndex, setMessageIndex } = useMediaOverlay()
   const { user } = useAuthStore();
 
   const messagesEndRef = useRef(null);
@@ -28,12 +30,12 @@ const ChatContainer = ({ activeChat }) => {
     <>
       {filterChat.length > 0 ? (
         <div className="flex flex-col gap-8 p-2 overflow-y-auto h-full">
-          {filterChat.map((msg, index) => {
+          {filterChat.map((msg, i) => {
             const isMyMessage = msg.senderId === user._id;
 
             return (
               <div
-                key={msg._id || index}
+                key={msg._id || i}
                 className={`flex flex-col gap-2 ${
                   isMyMessage ? "items-end" : "items-start"
                 }`}
@@ -49,7 +51,12 @@ const ChatContainer = ({ activeChat }) => {
                     <div className={`${msg.images.length > 1 ? "grid" : "flex"} grid-cols-2 gap-2 mb-2`}>
                       {(msg.images.length > 4 ? msg.images.slice(0,
                       4).map((image, index) => (
-                      <div key={index} className="relative">
+                      <button key={index} className="relative cursor-pointer" onClick={() => {
+                        setMediaData(filterChat)
+                        setMessageIndex(i)
+                        setMediaIndex(index)
+                        setIsMediaOverlayOpen(true)
+                      }}>
                         <img
                           src={image.imageUrl}
                           alt="image"
@@ -57,21 +64,27 @@ const ChatContainer = ({ activeChat }) => {
                           className="w-full lg:h-[300px] h-full object-cover object-top rounded-lg"
                         />
                         {index === 3 && (
-                          <button className="absolute cursor-pointer top-0 left-0 w-full h-full bg-black/80 flex items-center justify-center rounded-lg">
+                          <div className="absolute cursor-pointer top-0 left-0 w-full h-full bg-black/80 flex items-center justify-center rounded-lg">
                             <p className="text-sm text-white">
                               +{msg.images.length - 4}
                             </p>{" "}
-                          </button>
+                          </div>
                         )}
-                      </div>
+                      </button>
                       )) : msg.images.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image.imageUrl}
-                        draggable={false}
-                        alt="image"
-                        className="w-full h-full object-cover object-top rounded-lg"
-                      />
+                        <button key={index} className="cursor-pointer" onClick={() => {
+                          setMediaData(filterChat);
+                          setMessageIndex(i);
+                          setMediaIndex(index);
+                          setIsMediaOverlayOpen(true);
+                          }}>
+                          <img
+                            src={image.imageUrl}
+                            draggable={false}
+                            alt="image"
+                            className="w-full lg:h-[300px] h-full object-cover object-top rounded-lg"
+                          />
+                        </button>
                       )))}
                     </div>
                   )}
