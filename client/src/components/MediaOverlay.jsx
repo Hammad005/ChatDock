@@ -186,10 +186,10 @@ const MediaOverlay = () => {
                       src={img?.imageUrl}
                       alt="image"
                       draggable={false}
-                      className={`w-full h-full object-cover object-top rounded-lg border-3 ${
+                      className={`w-full h-full object-cover object-top rounded-lg border-3 transition-all ${
                         mediaIndex === index && messageIndex === i
-                          ? "opacity-100 border-primary"
-                          : "opacity-40 border-accent"
+                          ? "opacity-100 border-primary scale-85"
+                          : "opacity-40 hover:border-accent-foreground hover:opacity-100"
                       }`}
                     />
                   </button>

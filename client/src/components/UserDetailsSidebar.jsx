@@ -10,10 +10,17 @@ import { toast } from "sonner";
 import { ArrowRight, Images } from "lucide-react";
 import { Button } from "./ui/button";
 import { useChatStore } from "@/store/useChatStore";
+import { useMediaOverlay } from "@/context/MediaOverlayContext";
 
 const UserDetailsSidebar = ({ open, setOpen, user }) => {
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
   const { sendedMessages, receivedMessages } = useChatStore();
+  const {
+    setMediaData,
+    setIsMediaOverlayOpen,
+    setMediaIndex,
+    setMessageIndex,
+  } = useMediaOverlay();
 
   const merged = [
     ...sendedMessages.filter((msg) => msg?.receiverId === user?._id),
@@ -21,7 +28,7 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
   ];
 
   const filterChat = merged.sort(
-    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    (a, b) => new Date(b.createdAt) + new Date(a.createdAt)
   );
 
   return (
@@ -99,39 +106,36 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
                 <ArrowRight />
               </Button>
             </div>
-            <div className="grid grid-cols-3 gap-2 w-full">
-              {filterChat?.map((msg) => {
-                const images = msg?.images;
-
-                if (images?.length === 1) {
-                  // show only first image
-                  return (
+            <div className="grid grid-cols-4 gap-2 w-full">
+              {filterChat
+                ?.flatMap(
+                  (msg, i) =>
+                    msg.images?.map((image, index) => ({
+                      image,
+                      msgIndex: i,
+                      imageIndex: index,
+                    })).reverse() || []
+                ) // 👈 only take 4 images in total
+                .map(({ image, msgIndex, imageIndex }, i) => (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      setMediaData(filterChat);
+                      setMessageIndex(msgIndex);
+                      setMediaIndex(imageIndex);
+                      setOpen(false);
+                      setIsMediaOverlayOpen(true);
+                    }}
+                    className="cursor-pointer"
+                  >
                     <img
-                      key={images[0]._id || `${msg._id}-0`}
-                      src={images[0].imageUrl}
+                      src={image.imageUrl}
                       alt="image"
                       draggable={false}
-                      className="w-[100px] h-[100px] object-cover object-top rounded-lg"
+                      className="w-[100px] h-[80px] object-cover object-top rounded-lg"
                     />
-                  );
-                }
-
-                return images?.length > 3
-                  ? images
-                      .slice()
-                      .reverse()
-                      .slice(0, 1)
-                      .map((image, index) => (
-                        <img
-                          key={image._id || `${msg._id}-${index}`}
-                          src={image.imageUrl}
-                          alt="image"
-                          draggable={false}
-                          className="w-[100px] h-[100px] object-cover object-top rounded-lg"
-                        />
-                      ))
-                  : null;
-              })}
+                  </button>
+                )).reverse().slice(0, 4)}
             </div>
           </div>
         </div>
