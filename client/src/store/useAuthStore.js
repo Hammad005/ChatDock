@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { toast } from "sonner";
 import { create } from "zustand";
 import { useRequestStore } from "./useRequestStore";
+import { useChatStore } from "./useChatStore";
 
 const BACKEND_PORT = import.meta.env.VITE_API_URL;
 export const useAuthStore = create((set, get) => ({
@@ -179,6 +180,14 @@ export const useAuthStore = create((set, get) => ({
                 });
             }
         })
+
+        newSocket.off("newMessage").on("newMessage", (data) => {
+            if (data?.message?.receiverId === user._id) {
+                useChatStore.setState((state) => ({
+                    receivedMessages: [data?.message, ...state.receivedMessages],
+                }));
+            }
+        });
 
         set({ socket: newSocket });
     },

@@ -1,12 +1,13 @@
 import cloudinary from "../lib/cloudinary.js";
+import { getReceiverSocketId, io } from "../lib/socket.js";
 import Message from "../models/Message.js";
 
 export const getMessages = async (req, res) => {
     try {
         const myId = req.user._id;
 
-        const sendedMessages = await Message.find({ senderId: myId});
-        const receivedMessages = await Message.find({ receiverId: myId});
+        const sendedMessages = await Message.find({ senderId: myId });
+        const receivedMessages = await Message.find({ receiverId: myId });
         res.status(200).json({ success: true, sendedMessages, receivedMessages });
     } catch (error) {
         res.status(500).json({ error: error.message || "Internal Server Error" });
@@ -16,7 +17,7 @@ export const getMessages = async (req, res) => {
 export const sendMessage = async (req, res) => {
     try {
         const { text, images, files } = req.body;
-        
+
         const { id: receiverId } = req.params;
         const myId = req.user._id;
 
@@ -44,10 +45,10 @@ export const sendMessage = async (req, res) => {
         if (files && files.length > 0) {
             for (const file of files) {
                 const cloudinaryResponse = await cloudinary.uploader.upload(file?.fileData,
-                {
-                    folder: "ChatDock/messages/files",
-                    resource_type: "auto",
-                });
+                    {
+                        folder: "ChatDock/messages/files",
+                        resource_type: "auto",
+                    });
 
                 if (!cloudinaryResponse || cloudinaryResponse.error) {
                     throw new Error(cloudinaryResponse.error || "Unknown Cloudinary Error");
@@ -70,6 +71,21 @@ export const sendMessage = async (req, res) => {
         });
 
         await newMessage.save();
+
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        const senderSocketId = getReceiverSocketId(myId);
+
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", {
+                message: newMessage
+            });
+        }
+
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("newMessage", {
+                message: newMessage
+            });
+        }
 
         res.status(201).json(newMessage);
     } catch (error) {
