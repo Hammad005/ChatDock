@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Input } from "./ui/input";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "./ui/button";
 import { Loader2, UserPlus } from "lucide-react";
+import { useChatStore } from "@/store/useChatStore";
 
 const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
   const { allUsers, userLoading, userFriends, onlineUsers } = useAuthStore();
+  const { sendedMessages, receivedMessages } = useChatStore();
 
   const [filteredFriends, setFilteredFriends] = useState(
     allUsers?.filter((u) => userFriends?.some((req) => req === u._id))
@@ -16,6 +18,50 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
       allUsers?.filter((u) => userFriends?.some((req) => req === u._id))
     );
   }, [allUsers, userFriends]);
+
+  const LastMessage = ({
+    user,
+    receivedMessages = [],
+    sendedMessages = [],
+  }) => {
+    const lastMessage = useMemo(() => {
+      // Make sure we're not mutating arrays
+      const receivedCopy = [...receivedMessages];
+      const sendedCopy = [...sendedMessages];
+
+      // 1. Sort both arrays by createdAt (newest first)
+      receivedCopy.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      sendedCopy.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      // 2. Get latest messages for this user
+      const receivedMsg = receivedCopy.find(
+        (msg) => msg?.senderId === user._id
+      );
+      const sendedMsg = sendedCopy.find((msg) => msg?.receiverId === user._id);
+
+      // 3. Pick the most recent
+      const msg =
+        receivedMsg && sendedMsg
+          ? new Date(receivedMsg.createdAt) > new Date(sendedMsg.createdAt)
+            ? receivedMsg
+            : sendedMsg
+          : receivedMsg || sendedMsg;
+
+      if (!msg) return null;
+
+      // 4. Priority: text → images → files
+      if (msg.text) return msg.text;
+      if (msg.images?.length > 0) return msg.images.length > 1 ? `${msg.images.length} image(s)` : "1 image";
+      if (msg.files?.length > 0) return  msg.files.length > 1 ? `${msg.files.length} file(s)` : `1 file`;
+
+      return null;
+    }, [user._id, receivedMessages, sendedMessages]);
+
+    return <>{lastMessage}</>;
+  };
+
   return (
     <>
       <div className="flex flex-col w-full gap-4 mt-5">
@@ -40,7 +86,9 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
         ) : filteredFriends?.length > 0 ? (
           filteredFriends?.map((user) => (
             <button
-              className={`${activeChat === user._id && "bg-muted-foreground/10"} hover:bg-muted-foreground/10 cursor-pointer p-3 rounded-md border`}
+              className={`${
+                activeChat === user._id && "bg-muted-foreground/10"
+              } hover:bg-muted-foreground/10 cursor-pointer p-3 rounded-md border`}
               key={user._id}
               onClick={() => {
                 setActiveChat((prev) => (prev === user._id ? null : user._id));
@@ -48,7 +96,7 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
                   text: "",
                   images: [],
                   files: [],
-                })
+                });
               }}
             >
               <div className="flex items-center gap-4">
@@ -62,9 +110,7 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
                     }
                     `}
                   />
-                  <div
-                    className="size-12 object-contain rounded-full overflow-hidden border-2 border-primary bg-primary/50"
-                  >
+                  <div className="size-12 object-contain rounded-full overflow-hidden border-2 border-primary bg-primary/50">
                     {user?.profilePic?.imageUrl ? (
                       <img
                         src={user?.profilePic?.imageUrl}
@@ -86,9 +132,11 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
                       : user.fullName}
                   </h3>
                   <p className="text-xs text-muted-foreground">
-                    {user.about.length > 25
-                      ? `${user.about.slice(0, 25)}...`
-                      : user.about}
+                    <LastMessage
+                      user={user}
+                      receivedMessages={receivedMessages}
+                      sendedMessages={sendedMessages}
+                    />
                   </p>
                 </div>
               </div>

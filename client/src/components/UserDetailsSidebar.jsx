@@ -138,7 +138,7 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
               </div>
               <div className="flex flex-col items-start gap-2 px-6 w-full">
                 <div className="flex items-center justify-between w-full">
-                  <p className="text-base flex items-center">
+                  <p className="text-sm flex items-center">
                     <Images className="mr-2 size-5 text-muted-foreground" />
                     Media, Docs & Links
                   </p>
@@ -288,7 +288,7 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
                       const isMyMessage = msg.senderId !== user._id;
                       return (
                         <>
-                        <div className="flex items-center justify-between w-full">
+                        <div className={`flex ${isMyMessage && "flex-row-reverse"} items-center justify-between w-full`}>
                           {!isMyMessage ? (
                               <div key={msg._id} className="flex items-center gap-2">
                                 <div className="size-7 object-contain rounded-full overflow-hidden border-2 border-primary">
