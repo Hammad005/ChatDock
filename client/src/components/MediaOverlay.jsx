@@ -109,6 +109,7 @@ const MediaOverlay = () => {
           <Button
             variant={"secondary"}
             className={"rounded-full"}
+            size={"icon"}
             disabled={!hasPrevImage()}
             onClick={() => {
               const activeMessage = mediaData[messageIndex];
@@ -137,6 +138,7 @@ const MediaOverlay = () => {
           </div>
           <Button
             variant={"secondary"}
+            size={"icon"}
             className={"rounded-full"}
             disabled={
               !hasNextImage()
