@@ -43,7 +43,7 @@ export const sendMessage = async (req, res) => {
 
         if (files && files.length > 0) {
             for (const file of files) {
-                const cloudinaryResponse = await cloudinary.uploader.upload(file,
+                const cloudinaryResponse = await cloudinary.uploader.upload(file?.fileData,
                 {
                     folder: "ChatDock/messages/files",
                     resource_type: "auto",
@@ -56,6 +56,7 @@ export const sendMessage = async (req, res) => {
                 uploadedFiles.push({
                     fileId: cloudinaryResponse.public_id,
                     fileUrl: cloudinaryResponse.secure_url,
+                    fileName: file?.fileName,
                 });
             }
         }

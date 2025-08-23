@@ -17,15 +17,16 @@ const Home = () => {
   const [data, setData] = useState({
     text: "",
     images: [],
-    files: [],
+    files: [{
+      fileData: null,
+      fileName: "",
+    }],
   });
-  const [fileName, setFileName] = useState([]);
 
   const handleSubmit = async () => {
     const res = await sendMessage(activeChat, data);
     if (res?.success) {
       setData({ text: "", images: [], files: [] });
-      setFileName([]);
     }
 
     return {success: true};
@@ -78,8 +79,6 @@ const Home = () => {
                         setActiveChat={setActiveChat}
                         chatData={data}
                         setChatData={setData}
-                        fileName={fileName}
-                        setFileName={setFileName}
                         handleSubmit={handleSubmit}
                       />
                     </div>
@@ -133,8 +132,6 @@ const Home = () => {
                 setActiveChat={setActiveChat}
                 chatData={data}
                 setChatData={setData}
-                fileName={fileName}
-                setFileName={setFileName}
                 handleSubmit={handleSubmit}
               />
             </div>

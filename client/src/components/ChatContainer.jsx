@@ -130,6 +130,20 @@ const ChatContainer = ({ activeChat }) => {
                             ))}
                       </div>
                     )}
+                    {msg.files.length > 0 && (
+                      <div
+                        className={`flex flex-col gap-2 mb-2`}
+                      >
+                        {msg.files.map((file, index) => (
+                              <div
+                                key={index}
+                                className="p-2 bg-muted-foreground/10 rounded-lg flex items-center gap-2"
+                              >
+                                <p>{file.name}</p>
+                              </div>
+                            ))}
+                      </div>
+                    )}
                     <p className="whitespace-pre-wrap">
                       {msg.text.length > 750 && readMore !== msg._id ? (
                         <>

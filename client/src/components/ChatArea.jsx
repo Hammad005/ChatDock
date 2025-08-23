@@ -10,9 +10,12 @@ import {
 import { toast } from "sonner";
 import { useChatStore } from "@/store/useChatStore";
 
-const ChatArea = ({ chatData, setChatData, fileName, setFileName, handleSubmit }) => {
-
-  const {messagesLoading} = useChatStore();
+const ChatArea = ({
+  chatData,
+  setChatData,
+  handleSubmit,
+}) => {
+  const { messagesLoading } = useChatStore();
 
   const textareaRef = useRef(null);
   const filesUploadRef = useRef(null);
@@ -110,9 +113,11 @@ const ChatArea = ({ chatData, setChatData, fileName, setFileName, handleSubmit }
 
     setChatData((prev) => ({
       ...prev,
-      files: [...prev.files, ...uploadedFiles],
+      files: [...prev.files, ...uploadedFiles.map((file, index) => ({
+        fileData: file,
+        fileName: files[index].name,
+      }))],
     }));
-    setFileName([...fileName, ...files.map((file) => file.name.length > 20 ? file.name.slice(0, 20) + "..." : file.name)]);
 
     // ✅ Clear input so re-uploads always work
     e.target.value = "";
@@ -132,7 +137,7 @@ const ChatArea = ({ chatData, setChatData, fileName, setFileName, handleSubmit }
                   className="w-24 h-24 object-cover rounded-lg"
                 />
                 <Button
-                disabled={messagesLoading}
+                  disabled={messagesLoading}
                   size="icon"
                   className="absolute top-0 right-0"
                   onClick={() =>
@@ -156,9 +161,9 @@ const ChatArea = ({ chatData, setChatData, fileName, setFileName, handleSubmit }
                 className="flex items-center justify-between gap-2 w-full border border-muted-foreground p-4 rounded-lg whitespace-nowrap"
               >
                 <FileIcon className="w-6 h-6 text-purple-500" />
-                <span className="text-sm">{fileName[index]}</span>
+                <span className="text-sm">{files.fileName.length > 20 ? files.fileName.slice(0, 20) + "..." : files.fileName}</span>
                 <Button
-                disabled={messagesLoading}
+                  disabled={messagesLoading}
                   variant={"outline"}
                   size="icon"
                   onClick={() => {
@@ -166,7 +171,6 @@ const ChatArea = ({ chatData, setChatData, fileName, setFileName, handleSubmit }
                       ...prev,
                       files: prev.files.filter((_, i) => i !== index),
                     }));
-                    setFileName((prev) => prev.filter((_, i) => i !== index));
                   }}
                 >
                   <X className="w-4 h-4" />
@@ -242,13 +246,22 @@ const ChatArea = ({ chatData, setChatData, fileName, setFileName, handleSubmit }
           {(chatData.text ||
             chatData.images.length > 0 ||
             chatData.files.length > 0) && (
-            <Button size="icon" className="rounded-full" onClick={async() => {
-              const res = await handleSubmit()
-              if (res?.success && textareaRef.current) {
-                textareaRef.current.style.height = "40px";
-              }
-            }} disabled={messagesLoading}>
-              {messagesLoading ? <Loader className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
+            <Button
+              size="icon"
+              className="rounded-full"
+              onClick={async () => {
+                const res = await handleSubmit();
+                if (res?.success && textareaRef.current) {
+                  textareaRef.current.style.height = "40px";
+                }
+              }}
+              disabled={messagesLoading}
+            >
+              {messagesLoading ? (
+                <Loader className="h-5 w-5 animate-spin" />
+              ) : (
+                <Send className="h-5 w-5" />
+              )}
             </Button>
           )}
         </div>
