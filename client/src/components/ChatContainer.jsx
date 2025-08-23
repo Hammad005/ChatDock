@@ -1,9 +1,10 @@
 import { useChatStore } from "@/store/useChatStore";
-import { MailWarning } from "lucide-react";
+import { Download, File, MailWarning } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect, useRef, useState } from "react";
 import { useMediaOverlay } from "@/context/MediaOverlayContext";
 import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 
 const ChatContainer = ({ activeChat }) => {
   const [readMore, setReadMore] = useState(null);
@@ -29,6 +30,26 @@ const ChatContainer = ({ activeChat }) => {
   );
 
   const userChat = allUsers?.find((u) => u._id === activeChat);
+
+  const handleDownload = async (file) => {
+    try {
+      const response = await fetch(file.fileUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = file.fileName; // force the filename
+      document.body.appendChild(link);
+      link.click();
+
+      // cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed", error);
+    }
+  };
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -56,17 +77,17 @@ const ChatContainer = ({ activeChat }) => {
                 >
                   {!isMyMessage && (
                     <div className="flex items-center gap-2">
-                    <div className="size-7 object-contain rounded-full overflow-hidden border-2 border-primary">
-                      <img
-                        src={userChat?.profilePic?.imageUrl}
-                        alt="prfoile"
-                        draggable={false}
-                        className="w-full h-full object-cover object-top"
-                      />
-                    </div>
-                    <h3 className="text-xs font-semibold">
-                      {userChat?.fullName}
-                    </h3>
+                      <div className="size-7 object-contain rounded-full overflow-hidden border-2 border-primary">
+                        <img
+                          src={userChat?.profilePic?.imageUrl}
+                          alt="prfoile"
+                          draggable={false}
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </div>
+                      <h3 className="text-xs font-semibold">
+                        {userChat?.fullName}
+                      </h3>
                     </div>
                   )}
                   <div
@@ -131,17 +152,28 @@ const ChatContainer = ({ activeChat }) => {
                       </div>
                     )}
                     {msg.files.length > 0 && (
-                      <div
-                        className={`flex flex-col gap-2 mb-2`}
-                      >
+                      <div className={`flex flex-col gap-2 mb-2`}>
                         {msg.files.map((file, index) => (
-                              <div
-                                key={index}
-                                className="p-2 bg-muted-foreground/10 rounded-lg flex items-center gap-2"
-                              >
-                                <p>{file.name}</p>
-                              </div>
-                            ))}
+                          <div
+                            key={index}
+                            className="p-2 bg-muted-foreground/20 rounded-lg flex items-center justify-between gap-2"
+                          >
+                            <File className="size-5 text-purple-500" />
+                            <p>
+                              {file.fileName.length > 20
+                                ? file.fileName.slice(0, 20) + "..."
+                                : file.fileName}
+                            </p>
+
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => handleDownload(file)}
+                            >
+                              <Download />
+                            </Button>
+                          </div>
+                        ))}
                       </div>
                     )}
                     <p className="whitespace-pre-wrap">
@@ -180,11 +212,11 @@ const ChatContainer = ({ activeChat }) => {
                         )
                       )}
                     </p>
-                <p className="text-[10px] text-muted-foreground text-end mt-2">
-                  {new Date(msg.createdAt).toDateString() +
-                    " - " +
-                    new Date(msg.createdAt).toLocaleTimeString()}
-                </p>
+                    <p className="text-[10px] text-muted-foreground text-end mt-2">
+                      {new Date(msg.createdAt).toDateString() +
+                        " - " +
+                        new Date(msg.createdAt).toLocaleTimeString()}
+                    </p>
                   </div>
                 </div>
               </div>
