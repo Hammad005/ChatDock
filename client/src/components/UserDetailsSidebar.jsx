@@ -55,7 +55,9 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
   const totalFiles = filterChat
     ?.map((msg) => msg?.files?.length)
     .reduce((a, b) => a + b, 0);
-  const totalLinks = chatWithLinks.filter((msg) => urlRegex.test(msg?.text)).length; // ✅ only messages with links
+  const totalLinks = chatWithLinks.filter((msg) =>
+    urlRegex.test(msg?.text)
+  ).length; // ✅ only messages with links
   const handleDownload = async (file) => {
     try {
       const response = await fetch(file.fileUrl);
@@ -145,18 +147,11 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
 
                   <Button
                     variant={"ghost"}
-                    disabled={
-                      merged
-                        ?.map((msg) => msg?.images?.length)
-                        .reduce((a, b) => a + b, 0) === 0
-                    }
                     size={"sm"}
                     onClick={() => setOpenAside(true)}
                     className="text-sm text-muted-foreground"
                   >
-                    {
-                      totalImages + totalFiles + totalLinks
-                    }
+                    {totalImages + totalFiles + totalLinks}
                     <ArrowRight />
                   </Button>
                 </div>
@@ -243,40 +238,46 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
                   className={"flex items-center justify-center"}
                 >
                   <div className="overflow-y-auto h-[calc(100vh-130px)]">
-                    {filterChat?.map((msg, i) => (
-                      <div key={i}>
-                        {msg?.images?.length > 0 && (
-                          <p className="text-[10px] font-semibold py-2">
-                            {new Date(msg.createdAt).toDateString() +
-                              " - " +
-                              new Date(msg.createdAt).toLocaleTimeString()}
-                          </p>
-                        )}
-                        <div className={"grid grid-cols-3 gap-4"}>
-                          {msg?.images?.map((image, index) => (
-                            <button
-                              key={msg._id}
-                              onClick={() => {
-                                setMediaData(filterChat);
-                                setMessageIndex(i);
-                                setMediaIndex(index);
-                                setOpenAside(false);
-                                setOpen(false);
-                                setIsMediaOverlayOpen(true);
-                              }}
-                              className="cursor-pointer"
-                            >
-                              <img
-                                src={image.imageUrl}
-                                alt="image"
-                                draggable={false}
-                                className="w-[100px] h-[100px] object-cover object-top rounded-lg"
-                              />
-                            </button>
-                          ))}
+                    {filterChat?.filter((msg) => msg?.images?.length > 0)?.length > 0 ? (
+                      filterChat?.map((msg, i) => (
+                        <div key={i}>
+                          {msg?.images?.length > 0 && (
+                            <p className="text-[10px] font-semibold py-2">
+                              {new Date(msg.createdAt).toDateString() +
+                                " - " +
+                                new Date(msg.createdAt).toLocaleTimeString()}
+                            </p>
+                          )}
+                          <div className={"grid grid-cols-3 gap-4"}>
+                            {msg?.images?.map((image, index) => (
+                              <button
+                                key={msg._id}
+                                onClick={() => {
+                                  setMediaData(filterChat);
+                                  setMessageIndex(i);
+                                  setMediaIndex(index);
+                                  setOpenAside(false);
+                                  setOpen(false);
+                                  setIsMediaOverlayOpen(true);
+                                }}
+                                className="cursor-pointer"
+                              >
+                                <img
+                                  src={image.imageUrl}
+                                  alt="image"
+                                  draggable={false}
+                                  className="w-[100px] h-[100px] object-cover object-top rounded-lg"
+                                />
+                              </button>
+                            ))}
+                          </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-sm">No Media found</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </TabsContent>
                 <TabsContent
@@ -284,67 +285,82 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
                   className={"flex items-center justify-center"}
                 >
                   <div className="overflow-y-auto h-[calc(100vh-130px)] flex flex-col w-full">
-                    {filterChat?.filter((message) => message?.files.length > 0).map((msg) => {
-                      const isMyMessage = msg.senderId !== user._id;
-                      return (
-                        <>
-                        <div className={`flex ${isMyMessage && "flex-row-reverse"} items-center justify-between w-full`}>
-                          {!isMyMessage ? (
-                              <div key={msg._id} className="flex items-center gap-2">
-                                <div className="size-7 object-contain rounded-full overflow-hidden border-2 border-primary">
-                                  <img
-                                    src={user?.profilePic?.imageUrl}
-                                    alt="prfoile"
-                                    draggable={false}
-                                    className="w-full h-full object-cover object-top"
-                                  />
-                                </div>
-                                <h3 className="text-xs font-semibold">
-                                  {user?.fullName}
-                                </h3>
-                              </div>
-                            ) : (
-                              <h3 className="text-xs font-semibold">
-                                You
-                              </h3>
-                            )}
-                            <p className="text-[10px] font-semibold py-3">
-                              {new Date(msg.createdAt).toDateString() +
-                                " - " +
-                                new Date(msg.createdAt).toLocaleTimeString()}
-                            </p>
-                        </div>
-                          <div className={"flex flex-col gap-2"}>
-                            {msg?.files?.map((file, index) => (
+                    {filterChat?.filter((message) => message?.files.length > 0)
+                      .length > 0 ? (
+                      filterChat
+                        ?.filter((message) => message?.files.length > 0)
+                        .map((msg) => {
+                          const isMyMessage = msg.senderId !== user._id;
+                          return (
+                            <>
                               <div
-                                key={index}
-                                className={`p-2 rounded-2xl ${
-                                  isMyMessage
-                                    ? "bg-primary rounded-tr-none"
-                                    : "bg-background border border-muted-foreground/30 rounded-tl-none"
-                                } flex items-center justify-between gap-2`}
+                                className={`flex ${
+                                  isMyMessage && "flex-row-reverse"
+                                } items-center justify-between w-full`}
                               >
-                                <FileIcon className="size-5 text-purple-500" />
-                                <p>
-                                  {file.fileName.length > 20
-                                    ? file.fileName.slice(0, 20) + "..."
-                                    : file.fileName}
+                                {!isMyMessage ? (
+                                  <div
+                                    key={msg._id}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <div className="size-7 object-contain rounded-full overflow-hidden border-2 border-primary">
+                                      <img
+                                        src={user?.profilePic?.imageUrl}
+                                        alt="prfoile"
+                                        draggable={false}
+                                        className="w-full h-full object-cover object-top"
+                                      />
+                                    </div>
+                                    <h3 className="text-xs font-semibold">
+                                      {user?.fullName}
+                                    </h3>
+                                  </div>
+                                ) : (
+                                  <h3 className="text-xs font-semibold">You</h3>
+                                )}
+                                <p className="text-[10px] font-semibold py-3">
+                                  {new Date(msg.createdAt).toDateString() +
+                                    " - " +
+                                    new Date(
+                                      msg.createdAt
+                                    ).toLocaleTimeString()}
                                 </p>
-
-                                <Button
-                                  variant="outline"
-                                  size="icon"
-                                  onClick={() => handleDownload(file)}
-                                >
-                                  <Download />
-                                </Button>
                               </div>
-                            ))}
-                          </div>
+                              <div className={"flex flex-col gap-2"}>
+                                {msg?.files?.map((file, index) => (
+                                  <div
+                                    key={index}
+                                    className={`p-2 rounded-2xl ${
+                                      isMyMessage
+                                        ? "bg-primary rounded-tr-none"
+                                        : "bg-background border border-muted-foreground/30 rounded-tl-none"
+                                    } flex items-center justify-between gap-2`}
+                                  >
+                                    <FileIcon className="size-5 text-purple-500" />
+                                    <p className="text-white">
+                                      {file.fileName.length > 20
+                                        ? file.fileName.slice(0, 20) + "..."
+                                        : file.fileName}
+                                    </p>
 
-                        </>
-                      );
-                    })}
+                                    <Button
+                                      variant="outline"
+                                      size="icon"
+                                      onClick={() => handleDownload(file)}
+                                    >
+                                      <Download />
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
+                            </>
+                          );
+                        })
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-sm">No documents found</p>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
                 <TabsContent
@@ -352,65 +368,74 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
                   className={"flex items-center justify-center"}
                 >
                   <div className="overflow-y-auto h-[calc(100vh-130px)] flex flex-col gap-3">
-                    {chatWithLinks
-                      ?.filter((msg) => urlRegex.test(msg?.text)) // ✅ only messages with link
-                      .map((msg) => {
-                        const isMyMessage = msg.senderId !== user._id;
-                        return (
-                          <>
-                            {!isMyMessage ? (
-                              <div className="flex items-center gap-2">
-                                <div className="size-7 object-contain rounded-full overflow-hidden border-2 border-primary">
-                                  <img
-                                    src={user?.profilePic?.imageUrl}
-                                    alt="prfoile"
-                                    draggable={false}
-                                    className="w-full h-full object-cover object-top"
-                                  />
+                    {chatWithLinks?.filter((msg) => urlRegex.test(msg?.text))
+                      .length > 0 ? ( // ✅ only messages with link
+                      chatWithLinks
+                        ?.filter((msg) => urlRegex.test(msg?.text))
+                        .map((msg) => {
+                          const isMyMessage = msg.senderId !== user._id;
+                          return (
+                            <>
+                              {!isMyMessage ? (
+                                <div className="flex items-center gap-2">
+                                  <div className="size-7 object-contain rounded-full overflow-hidden border-2 border-primary">
+                                    <img
+                                      src={user?.profilePic?.imageUrl}
+                                      alt="prfoile"
+                                      draggable={false}
+                                      className="w-full h-full object-cover object-top"
+                                    />
+                                  </div>
+                                  <h3 className="text-xs font-semibold">
+                                    {user?.fullName}
+                                  </h3>
                                 </div>
-                                <h3 className="text-xs font-semibold">
-                                  {user?.fullName}
+                              ) : (
+                                <h3 className="text-xs font-semibold text-end">
+                                  You
                                 </h3>
-                              </div>
-                            ) : (
-                              <h3 className="text-xs font-semibold text-end">
-                                You
-                              </h3>
-                            )}
-                            <div
-                              key={msg._id || msg.createdAt}
-                              className={`p-3 rounded-2xl text-sm break-words ${
-                                isMyMessage
-                                  ? "bg-primary text-white rounded-tr-none"
-                                  : "bg-background border border-muted-foreground/30 rounded-tl-none"
-                              }`}
-                            >
-                              {msg.text.split(urlRegex).map((part, i) =>
-                                urlRegex.test(part) ? (
-                                  <Link
-                                    key={i}
-                                    to={part}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-500 underline"
-                                  >
-                                    {part}
-                                  </Link>
-                                ) : (
-                                  part
-                                )
                               )}
+                              <div
+                                key={msg._id || msg.createdAt}
+                                className={`p-3 rounded-2xl text-sm break-words ${
+                                  isMyMessage
+                                    ? "bg-primary text-white rounded-tr-none"
+                                    : "bg-background border border-muted-foreground/30 rounded-tl-none"
+                                }`}
+                              >
+                                {msg.text.split(urlRegex).map((part, i) =>
+                                  urlRegex.test(part) ? (
+                                    <Link
+                                      key={i}
+                                      to={part}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-500 underline"
+                                    >
+                                      {part}
+                                    </Link>
+                                  ) : (
+                                    part
+                                  )
+                                )}
 
-                              <p className="text-xs text-muted-foreground text-end">
-                                {new Date(msg.createdAt).toDateString() +
-                                  " - " +
-                                  new Date(msg.createdAt).toLocaleTimeString()}
-                              </p>
-                            </div>
-                            <span className="w-full h-px bg-secondary" />
-                          </>
-                        );
-                      })}
+                                <p className="text-xs text-muted-foreground text-end">
+                                  {new Date(msg.createdAt).toDateString() +
+                                    " - " +
+                                    new Date(
+                                      msg.createdAt
+                                    ).toLocaleTimeString()}
+                                </p>
+                              </div>
+                              <span className="w-full h-px bg-secondary" />
+                            </>
+                          );
+                        })
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <p className="text-sm">No links found</p>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
               </Tabs>

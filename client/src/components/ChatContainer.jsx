@@ -159,7 +159,7 @@ const ChatContainer = ({ activeChat }) => {
                             className="p-2 bg-muted-foreground/20 rounded-lg flex items-center justify-between gap-2 text-foreground"
                           >
                             <File className="size-5 text-purple-500" />
-                            <p>
+                            <p className="text-white">
                               {file.fileName.length > 20
                                 ? file.fileName.slice(0, 20) + "..."
                                 : file.fileName}

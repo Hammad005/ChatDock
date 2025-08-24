@@ -10,10 +10,13 @@ import {
 } from "@/components/ui/tooltip";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRequestStore } from "@/store/useRequestStore";
+import { useChatStore } from "@/store/useChatStore";
 
 const MinSidebar = ({ active, setActive }) => {
   const { user, logout, userLoading } = useAuthStore();
   const { receivedRequests } = useRequestStore();
+    const { receivedMessages } = useChatStore();
+  
 
   return (
     <>
@@ -37,6 +40,11 @@ const MinSidebar = ({ active, setActive }) => {
 
           <Tooltip>
             <TooltipTrigger asChild>
+              <div className="relative">
+              {receivedMessages?.filter((r) => !r.seen).length > 0 && <span className="absolute top-0 right-0 -translate-y-1/3 translate-x-1/2 min-w-5 min-h-5 bg-red-500 rounded-full text-xs flex items-center justify-center pr-0.5">
+              {receivedMessages?.filter((r) => !r.seen).length}
+              </span>
+              }
               <Button
                 size={"icon"}
                 onClick={() => setActive("Chat")}
@@ -44,6 +52,7 @@ const MinSidebar = ({ active, setActive }) => {
               >
                 <MessageCircleMore />
               </Button>
+              </div>
             </TooltipTrigger>
             <TooltipContent side={"right"}>
               <p>Chat</p>
