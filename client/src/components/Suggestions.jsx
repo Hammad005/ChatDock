@@ -7,7 +7,7 @@ import { useImageOverlay } from "@/context/ImageOverlayContext";
 import { toast } from "sonner";
 import { useRequestStore } from "@/store/useRequestStore";
 
-const Suggestions = () => {
+const Suggestions = ({activeChat}) => {
   const [activeButton, setActiveButton] = useState(null);
   const { allUsers, userLoading, userFriends } = useAuthStore();
 
@@ -38,7 +38,7 @@ const Suggestions = () => {
   
   return (
     <>
-      <div className="flex flex-col items-center w-full gap-4 mt-5">
+      <div className={`flex flex-col items-center w-full gap-4 mt-5 ${activeChat && "lg:p-0 p-3"}`}>
         <Input
           type="text"
           placeholder="Search for a user"

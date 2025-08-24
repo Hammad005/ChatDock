@@ -19,7 +19,7 @@ import {
 import { useImageOverlay } from "@/context/ImageOverlayContext";
 import RemoveProfile from "./RemoveProfile";
 
-const Profile = () => {
+const Profile = ({activeChat}) => {
   const { user, updateUserLoading, update } = useAuthStore();
   const [overlayActive, setOverlayActive] = useState(false);
   const { setIsOverlayOpen, setImageData } = useImageOverlay();
@@ -66,7 +66,7 @@ const Profile = () => {
   return (
     <>
     <RemoveProfile open={open} setOpen={setOpen} />
-      <div className="flex flex-col items-center w-full gap-4 mt-10">
+      <div className={`flex flex-col items-center w-full gap-4 mt-10 ${activeChat && "lg:p-0 p-3"}`}>
         <DropdownMenu onOpenChange={(open) => setOverlayActive(open)}>
           <DropdownMenuTrigger asChild disabled={updateUserLoading}>
             <div className="relative">

@@ -43,38 +43,38 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
   // Priority: text → images → files
   if (lastMessage.text) {
     return (
-      <p className={`flex items-center justify-between ${isUnseen && "font-black"}`}>
+      <p className={`w-full ${isUnseen && "font-black"}`}>
         <span className="flex items-center gap-1">
           {isUnseen && <span className="rounded-full bg-red-500 w-2 h-2" />}
-          {lastMessage.text}
+          {lastMessage.text.length > 20 ? `${lastMessage.text.slice(0, 20)}...` : lastMessage.text}
         </span>
-        <span className="text-[10px]">{formatDateTime(lastMessage.createdAt)}</span>
+        <span className="text-[10px] mt-1 flex justify-end">{formatDateTime(lastMessage.createdAt)}</span>
       </p>
     );
   }
 
   if (lastMessage.images?.length > 0) {
     return (
-      <p className={`flex items-center justify-between w-full ${isUnseen && "font-black"}`}>
+      <p className={`w-full ${isUnseen && "font-black"}`}>
         <span className="flex items-center gap-1">
           {isUnseen && <span className="rounded-full bg-red-500 w-2 h-2" />}
           <Image className={`size-4 ${isUnseen && "stroke-3"}`} />
           {lastMessage.images.length} {lastMessage.images.length > 1 ? "images" : "image"}
         </span>
-        <span className="text-[10px]">{formatDateTime(lastMessage.createdAt)}</span>
+        <span className="text-[10px] mt-1 flex justify-end">{formatDateTime(lastMessage.createdAt)}</span>
       </p>
     );
   }
 
   if (lastMessage.files?.length > 0) {
     return (
-      <p className={`flex items-center justify-between w-full ${isUnseen && "font-black"}`}>
+      <p className={`w-full ${isUnseen && "font-black"}`}>
         <span className="flex items-center gap-1">
           {isUnseen && <span className="rounded-full bg-red-500 w-2 h-2" />}
           <File className={`size-4 ${isUnseen && "stroke-3"}`} />
           {lastMessage.files.length} {lastMessage.files.length > 1 ? "files" : "file"}
         </span>
-        <span className="text-[10px]">{formatDateTime(lastMessage.createdAt)}</span>
+        <span className="text-[10px] mt-1 flex justify-end">{formatDateTime(lastMessage.createdAt)}</span>
       </p>
     );
   }

@@ -77,8 +77,8 @@ const Home = () => {
               </h3>
 
               <div className="h-full overflow-y-auto overflow-x-hidden">
-                {active === "Home" && <Suggestions />}
-                {active === "Profile" && <Profile />}
+                {active === "Home" && <Suggestions activeChat={activeChat}/>}
+                {active === "Profile" && <Profile activeChat={activeChat}/>}
                 {active === "Chat" && (
                   <>
                     <div
@@ -104,7 +104,7 @@ const Home = () => {
                     </div>
                   </>
                 )}
-                {active === "Friends" && <Friends />}
+                {active === "Friends" && <Friends activeChat={activeChat}/>}
               </div>
             </div>
           </div>

@@ -19,7 +19,7 @@ const Chat = ({ activeChat, setActiveChat, chatData, setChatData, handleSubmit }
       </div>
 
       {/* Messages (scrollable) */}
-      <div className="h-screen px-4 z-10 overflow-y-auto overflow-x-hidden">
+      <div className="flex-1 px-4 z-10 overflow-y-auto overflow-x-hidden">
         <ChatContainer
           activeChat={activeChat}
           setActiveChat={setActiveChat}

@@ -1,5 +1,5 @@
 import { useChatStore } from "@/store/useChatStore";
-import { Check, CheckCheck, Download, File, MailWarning } from "lucide-react";
+import { ArrowDownIcon, Check, CheckCheck, Download, File, MailWarning } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect, useRef, useState } from "react";
 import { useMediaOverlay } from "@/context/MediaOverlayContext";
@@ -9,6 +9,7 @@ import { Button } from "./ui/button";
 const ChatContainer = ({ activeChat }) => {
   const [readMore, setReadMore] = useState(null);
   const { sendedMessages, receivedMessages } = useChatStore();
+  const [showScroll, setShowScroll] = useState(false);
   const {
     setMediaData,
     setIsMediaOverlayOpen,
@@ -18,6 +19,7 @@ const ChatContainer = ({ activeChat }) => {
   const { user, allUsers } = useAuthStore();
 
   const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null); 
 
   const merged = [
     ...sendedMessages.filter((msg) => msg?.receiverId === activeChat),
@@ -56,10 +58,27 @@ const ChatContainer = ({ activeChat }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [sendedMessages, activeChat, receivedMessages]);
 
+   useEffect(() => {
+    const container = chatContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const nearBottom =
+        container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+      setShowScroll(!nearBottom);
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
   return (
     <>
       {filterChat.length > 0 ? (
-        <div className="flex flex-col gap-8 p-2 overflow-y-auto h-full">
+        <div ref={chatContainerRef} className="flex flex-col gap-8 p-2 overflow-y-auto h-full">
           {filterChat.map((msg, i) => {
             const isMyMessage = msg.senderId === user._id;
 
@@ -232,6 +251,16 @@ const ChatContainer = ({ activeChat }) => {
           })}
           {/* dummy div to scroll into view */}
           <div ref={messagesEndRef} />
+          {showScroll && (
+            <div className="fixed bottom-20 self-end">
+              <Button
+                onClick={scrollToBottom}
+                variant={'outline'}
+              >
+                <ArrowDownIcon size={20} />
+              </Button>
+            </div>
+          )}
         </div>
       ) : (
         <div className="flex items-end pb-5 justify-center h-full">

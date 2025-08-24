@@ -3,13 +3,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import FriendRequest from "./FriendRequest";
 import MyFirends from "./MyFirends";
 
-const Friends = () => {
+const Friends = ({activeChat}) => {
   
   
 
   return (
     <>
-      <div className="flex flex-col items-center w-full gap-4 mt-5">
+      <div className={`flex flex-col items-center w-full gap-4 mt-5 ${activeChat && "lg:p-0 p-3"}`}>
         <Tabs defaultValue="Friend Requests" className="w-full ">
           <TabsList className={"w-full "}>
             <TabsTrigger value="Friend Requests">Friend Requests</TabsTrigger>
