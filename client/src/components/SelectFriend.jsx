@@ -48,12 +48,18 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
     if (!msg) return null;
 
     // 5. Priority: text → images → files
-    if (msg.text) return msg.text;
+    if (msg.text) return (
+      <span className={`flex items-center gap-1 ${!receivedMsg?.seen && "font-black"}`}>
+          {!receivedMsg?.seen && <span className="rounded-full bg-red-500 w-2 h-2"/>}
+        {msg.text}
+      </span>
+    );
 
     if (msg.images?.length > 0) {
       return (
-        <span className="flex items-center gap-1">
-          <Image className="size-4 stroke-3" />
+        <span className={`flex items-center gap-1 ${!receivedMsg?.seen && "font-black"}`}>
+          {!receivedMsg?.seen && <span className="rounded-full bg-red-500 w-2 h-2"/>}
+          <Image className={`size-4 ${!receivedMsg?.seen && "stroke-3"}`} />
           {msg.images.length} {msg.images.length > 1 ? "images" : "image"}
         </span>
       );
@@ -61,8 +67,9 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
 
     if (msg.files?.length > 0) {
       return (
-        <span className="flex items-center gap-1">
-          <File className="size-4 stroke-3" />
+        <span className={`flex items-center gap-1 ${!receivedMsg?.seen && "font-black"}`}>
+          {!receivedMsg?.seen && <span className="rounded-full bg-red-500 w-2 h-2"/>}
+          <File className={`size-4 ${!receivedMsg?.seen && "stroke-3"}`} />
           {msg.files.length} {msg.files.length > 1 ? "files" : "file"}
         </span>
       );
@@ -144,7 +151,7 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
                       ? `${user.fullName.slice(0, 25)}...`
                       : user.fullName}
                   </h3>
-                  <p className="text-xs text-muted-foreground font-black">
+                  <p className="text-xs text-muted-foreground">
                     <LastMessage
                       user={user}
                       receivedMessages={receivedMessages}
