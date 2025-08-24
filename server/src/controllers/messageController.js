@@ -108,6 +108,21 @@ export const markAsSeen = async (req, res) => {
             { _id: { $in: message.map(msg => msg._id) } },
             { $set: { seen: true } }
         );
+        const receiverSocketId = getReceiverSocketId(req.user._id);
+        const senderSocketId = getReceiverSocketId(id);
+
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("messageSeen", {
+                messageIds: message.map(msg => msg._id)
+            });
+        }
+
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("messageSeen", {
+                messageIds: message.map(msg => msg._id)
+            });
+        }
+
         res.status(200).json({ seenMessages: message.map(msg => msg._id) });
     } catch (error) {
         console.error(error);

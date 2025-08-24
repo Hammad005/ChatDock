@@ -149,14 +149,14 @@ export const useAuthStore = create((set, get) => ({
                 useRequestStore.setState((state) => ({
                     receivedRequests: [data?.request, ...state.receivedRequests],
                 }));
-            }            
+            }
         });
 
         newSocket.off("rejectRequest").on("rejectRequest", (data) => {
             useRequestStore.setState((state) => ({
                 sendedRequests: state.sendedRequests?.filter((r) => r._id !== data),
                 receivedRequests: state.receivedRequests?.filter((r) => r._id !== data),
-            }));            
+            }));
         });
 
 
@@ -189,16 +189,26 @@ export const useAuthStore = create((set, get) => ({
             }
         });
 
+        newSocket.on("messageSeen", (data) => {
+            useChatStore.setState((state) => ({
+                sendedMessages: state.sendedMessages.map((msg) =>
+                    data.messageIds.includes(msg._id) ? { ...msg, seen: true } : msg
+                ),
+            }));
+        });
+
+
+
         set({ socket: newSocket });
     },
 
     disConnectSocket: () => {
-    const socket = get().socket;
-    if (socket?.connected) {
-        socket.disconnect();
-    }
-    // clear the socket reference
-    set({ socket: null });
-},
+        const socket = get().socket;
+        if (socket?.connected) {
+            socket.disconnect();
+        }
+        // clear the socket reference
+        set({ socket: null });
+    },
 
 }));

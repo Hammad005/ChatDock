@@ -1,5 +1,5 @@
 import { useChatStore } from "@/store/useChatStore";
-import { Download, File, MailWarning } from "lucide-react";
+import { Check, CheckCheck, Download, File, MailWarning } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect, useRef, useState } from "react";
 import { useMediaOverlay } from "@/context/MediaOverlayContext";
@@ -212,11 +212,19 @@ const ChatContainer = ({ activeChat }) => {
                         )
                       )}
                     </p>
-                    <p className="text-[10px] text-muted-foreground text-end mt-2">
-                      {new Date(msg.createdAt).toDateString() +
-                        " - " +
-                        new Date(msg.createdAt).toLocaleTimeString()}
-                    </p>
+                    <div className="flex items-center justify-end gap-2 mt-2">
+                      <p className="text-[10px] text-muted-foreground">
+                        {new Date(msg.createdAt).toDateString() +
+                          " - " +
+                          new Date(msg.createdAt).toLocaleTimeString()}
+                      </p>
+                      {isMyMessage &&
+                        (msg.seen ? (
+                          <CheckCheck className="size-4 text-blue-500" />
+                        ) : (
+                          <Check className="size-4 text-muted-foreground" />
+                        ))}
+                    </div>
                   </div>
                 </div>
               </div>
