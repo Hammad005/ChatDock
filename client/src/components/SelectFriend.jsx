@@ -19,112 +19,69 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
     );
   }, [allUsers, userFriends]);
 
-  const LastMessage = ({
-    user,
-    receivedMessages = [],
-    sendedMessages = [],
-  }) => {
-    const lastMessage = useMemo(() => {
-      // 1. Clone arrays to avoid mutating props
-      const receivedCopy = [...receivedMessages];
-      const sendedCopy = [...sendedMessages];
-
-      // 2. Sort both arrays by createdAt (newest first)
-      receivedCopy.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      );
-      sendedCopy.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-      // 3. Get latest messages for this user
-      const receivedMsg = receivedCopy.find(
-        (msg) => msg?.senderId === user._id
-      );
-      const sendedMsg = sendedCopy.find((msg) => msg?.receiverId === user._id);
-
-      // 4. Pick the most recent message
-      const msg =
-        receivedMsg && sendedMsg
-          ? new Date(receivedMsg.createdAt) > new Date(sendedMsg.createdAt)
-            ? receivedMsg
-            : sendedMsg
-          : receivedMsg || sendedMsg;
-
-      if (!msg) return null;
-
-      // 5. Priority: text → images → files
-      if (msg.text)
-        return (
-          <p
-            className={`flex items-center justify-between ${
-              !receivedMsg?.seen && "font-black"
-            }`}
-          >
-            <span className={`flex items-center gap-1`}>
-              {!receivedMsg?.seen && (
-                <span className="rounded-full bg-red-500 w-2 h-2" />
-              )}
-              {msg.text}
-            </span>
-            <span className="text-[10px]">
-              {new Date(msg.createdAt).toDateString() +
-                " - " +
-                new Date(msg.createdAt).toLocaleTimeString()}
-            </span>
-          </p>
-        );
-
-      if (msg.images?.length > 0) {
-        return (
-          <p
-            className={`flex items-center gap-1 justify-between w-full ${
-              !receivedMsg?.seen && "font-black"
-            }`}
-          >
-            <span className={`flex items-center gap-1`}>
-            {!receivedMsg?.seen && (
-              <span className="rounded-full bg-red-500 w-2 h-2" />
-            )}
-            <Image className={`size-4 ${!receivedMsg?.seen && "stroke-3"}`} />
-            {msg.images.length} {msg.images.length > 1 ? "images" : "image"}
-            </span>
-            <span className="text-[10px]">
-              {new Date(msg.createdAt).toDateString() +
-                " - " +
-                new Date(msg.createdAt).toLocaleTimeString()}
-            </span>
-          </p>
-        );
-      }
-
-      if (msg.files?.length > 0) {
-        return (
-          <p
-            className={`flex items-center gap-1 justify-between w-full ${
-              !receivedMsg?.seen && "font-black"
-            }`}
-          >
-            <span className={`flex items-center gap-1`}>
-            {!receivedMsg?.seen && (
-              <span className="rounded-full bg-red-500 w-2 h-2" />
-            )}
-            <File className={`size-4 ${!receivedMsg?.seen && "stroke-3"}`} />
-            {msg.files.length} {msg.files.length > 1 ? "files" : "file"}
-            </span>
-
-            <span className="text-[10px]">
-              {new Date(msg.createdAt).toDateString() +
-                " - " +
-                new Date(msg.createdAt).toLocaleTimeString()}
-            </span>
-          </p>
-        );
-      }
-
-      return null;
-    }, [user._id, receivedMessages, sendedMessages]);
-
-    return <>{lastMessage}</>;
+  const LastMessage = ({ user, receivedMessages, sendedMessages }) => {
+  const formatDateTime = (dateStr) => {
+    const d = new Date(dateStr);
+    return `${d.toDateString()} - ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
   };
+
+  const lastMessage = useMemo(() => {
+    const msgs = [
+      ...receivedMessages.filter((m) => m.senderId === user._id),
+      ...sendedMessages.filter((m) => m.receiverId === user._id),
+    ];
+    if (msgs.length === 0) return null;
+    return msgs.reduce((latest, m) =>
+      new Date(m.createdAt) > new Date(latest.createdAt) ? m : latest
+    );
+  }, [user._id, receivedMessages, sendedMessages]);
+
+  if (!lastMessage) return null;
+
+  const isUnseen = lastMessage.senderId === user._id && !lastMessage.seen;
+
+  // Priority: text → images → files
+  if (lastMessage.text) {
+    return (
+      <p className={`flex items-center justify-between ${isUnseen && "font-black"}`}>
+        <span className="flex items-center gap-1">
+          {isUnseen && <span className="rounded-full bg-red-500 w-2 h-2" />}
+          {lastMessage.text}
+        </span>
+        <span className="text-[10px]">{formatDateTime(lastMessage.createdAt)}</span>
+      </p>
+    );
+  }
+
+  if (lastMessage.images?.length > 0) {
+    return (
+      <p className={`flex items-center justify-between w-full ${isUnseen && "font-black"}`}>
+        <span className="flex items-center gap-1">
+          {isUnseen && <span className="rounded-full bg-red-500 w-2 h-2" />}
+          <Image className={`size-4 ${isUnseen && "stroke-3"}`} />
+          {lastMessage.images.length} {lastMessage.images.length > 1 ? "images" : "image"}
+        </span>
+        <span className="text-[10px]">{formatDateTime(lastMessage.createdAt)}</span>
+      </p>
+    );
+  }
+
+  if (lastMessage.files?.length > 0) {
+    return (
+      <p className={`flex items-center justify-between w-full ${isUnseen && "font-black"}`}>
+        <span className="flex items-center gap-1">
+          {isUnseen && <span className="rounded-full bg-red-500 w-2 h-2" />}
+          <File className={`size-4 ${isUnseen && "stroke-3"}`} />
+          {lastMessage.files.length} {lastMessage.files.length > 1 ? "files" : "file"}
+        </span>
+        <span className="text-[10px]">{formatDateTime(lastMessage.createdAt)}</span>
+      </p>
+    );
+  }
+
+  return null;
+};
+
 
   return (
     <>
