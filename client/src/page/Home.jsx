@@ -1,5 +1,5 @@
 import MinSidebar from "@/components/MinSidebar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HomePhoto from "../assets/HomePhoto.png";
 import Logo from "../assets/logo.png";
 import Profile from "@/components/Profile";
@@ -10,27 +10,47 @@ import Chat from "@/components/Chat";
 import { useChatStore } from "@/store/useChatStore";
 
 const Home = () => {
-  const {sendMessage} = useChatStore();
+  const { sendMessage, receivedMessages, markAsSeen } = useChatStore();
   const [active, setActive] = useState("Home");
   const [activeChat, setActiveChat] = useState(null);
 
   const [data, setData] = useState({
     text: "",
     images: [],
-    files: [{
-      fileData: null,
-      fileName: "",
-    }],
+    files: [
+      {
+        fileData: null,
+        fileName: "",
+      },
+    ],
   });
 
   const handleSubmit = async () => {
     const res = await sendMessage(activeChat, data);
     if (res?.success) {
-      setData({ text: "", images: [], files: [] });
+      setData({
+        text: "",
+        images: [],
+        files: [],
+      });
     }
 
-    return {success: true};
+    return { success: true };
   };
+
+  useEffect(() => {
+    if (!activeChat) return;
+
+    // Find if this chat has any unseen messages
+    const hasUnseen = receivedMessages.some(
+      (msg) => msg.senderId === activeChat && !msg.seen
+    );
+
+    if (hasUnseen) {
+      markAsSeen(activeChat);
+    }
+  }, [activeChat, receivedMessages]);
+
   return (
     <>
       <div className="grid lg:grid-cols-12">

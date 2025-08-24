@@ -97,13 +97,18 @@ export const sendMessage = async (req, res) => {
 export const markAsSeen = async (req, res) => {
     const { id } = req.params;
     try {
-        const message = await Message.findById(id);
-        if (!message) {
+        const message = await Message.find({
+            receiverId: req.user._id,
+            senderId: id
+        });
+        if (message.length === 0) {
             return res.status(404).json({ message: "Message not found" });
         }
-        message.seen = true;
-        await message.save();
-        res.status(200).json({seendMessage: id});
+        await Message.updateMany(
+            { _id: { $in: message.map(msg => msg._id) } },
+            { $set: { seen: true } }
+        );
+        res.status(200).json({ seenMessages: message.map(msg => msg._id) });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Failed to mark message as seen" });

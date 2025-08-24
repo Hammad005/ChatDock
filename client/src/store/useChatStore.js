@@ -19,14 +19,14 @@ export const useChatStore = create((set) => ({
     },
     sendMessage: async (id, data) => {
         set({ messagesLoading: true });
-        
+
         try {
             const res = await axios.post(`/messages/sendMessage/${id}`, data);
             set((state) => ({
                 sendedMessages: [res.data, ...state.sendedMessages],
                 messagesLoading: false,
             }));
-            
+
             return { success: true }
         } catch (error) {
             console.log(error);
@@ -34,4 +34,19 @@ export const useChatStore = create((set) => ({
             set({ messagesLoading: false });
         }
     },
+    markAsSeen: async (id) => {
+        // update state immediately
+        set((state) => ({
+            receivedMessages: state.receivedMessages.map((msg) =>
+                msg.senderId === id ? { ...msg, seen: true } : msg
+            ),
+        }));
+
+        try {
+            await axios.put(`/messages/markAsSeen/${id}`);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
 }))
