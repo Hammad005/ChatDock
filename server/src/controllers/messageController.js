@@ -93,3 +93,19 @@ export const sendMessage = async (req, res) => {
         res.status(500).json({ message: "Failed to send message" });
     }
 };
+
+export const markAsSeen = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const message = await Message.findById(id);
+        if (!message) {
+            return res.status(404).json({ message: "Message not found" });
+        }
+        message.seen = true;
+        await message.save();
+        res.status(200).json({seendMessage: id});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Failed to mark message as seen" });
+    }
+};

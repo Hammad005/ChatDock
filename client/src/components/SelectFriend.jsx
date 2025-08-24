@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Input } from "./ui/input";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "./ui/button";
-import { Loader2, UserPlus } from "lucide-react";
+import { File, Image, Loader2, UserPlus } from "lucide-react";
 import { useChatStore } from "@/store/useChatStore";
 
 const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
@@ -20,47 +20,60 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
   }, [allUsers, userFriends]);
 
   const LastMessage = ({
-    user,
-    receivedMessages = [],
-    sendedMessages = [],
-  }) => {
-    const lastMessage = useMemo(() => {
-      // Make sure we're not mutating arrays
-      const receivedCopy = [...receivedMessages];
-      const sendedCopy = [...sendedMessages];
+  user,
+  receivedMessages = [],
+  sendedMessages = [],
+}) => {
+  const lastMessage = useMemo(() => {
+    // 1. Clone arrays to avoid mutating props
+    const receivedCopy = [...receivedMessages];
+    const sendedCopy = [...sendedMessages];
 
-      // 1. Sort both arrays by createdAt (newest first)
-      receivedCopy.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+    // 2. Sort both arrays by createdAt (newest first)
+    receivedCopy.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    sendedCopy.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    // 3. Get latest messages for this user
+    const receivedMsg = receivedCopy.find((msg) => msg?.senderId === user._id);
+    const sendedMsg = sendedCopy.find((msg) => msg?.receiverId === user._id);
+
+    // 4. Pick the most recent message
+    const msg =
+      receivedMsg && sendedMsg
+        ? new Date(receivedMsg.createdAt) > new Date(sendedMsg.createdAt)
+          ? receivedMsg
+          : sendedMsg
+        : receivedMsg || sendedMsg;
+
+    if (!msg) return null;
+
+    // 5. Priority: text → images → files
+    if (msg.text) return msg.text;
+
+    if (msg.images?.length > 0) {
+      return (
+        <span className="flex items-center gap-1">
+          <Image className="size-4 stroke-3" />
+          {msg.images.length} {msg.images.length > 1 ? "images" : "image"}
+        </span>
       );
-      sendedCopy.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
 
-      // 2. Get latest messages for this user
-      const receivedMsg = receivedCopy.find(
-        (msg) => msg?.senderId === user._id
+    if (msg.files?.length > 0) {
+      return (
+        <span className="flex items-center gap-1">
+          <File className="size-4 stroke-3" />
+          {msg.files.length} {msg.files.length > 1 ? "files" : "file"}
+        </span>
       );
-      const sendedMsg = sendedCopy.find((msg) => msg?.receiverId === user._id);
+    }
 
-      // 3. Pick the most recent
-      const msg =
-        receivedMsg && sendedMsg
-          ? new Date(receivedMsg.createdAt) > new Date(sendedMsg.createdAt)
-            ? receivedMsg
-            : sendedMsg
-          : receivedMsg || sendedMsg;
+    return null;
+  }, [user._id, receivedMessages, sendedMessages]);
 
-      if (!msg) return null;
+  return <>{lastMessage}</>;
+};
 
-      // 4. Priority: text → images → files
-      if (msg.text) return msg.text;
-      if (msg.images?.length > 0) return msg.images.length > 1 ? `${msg.images.length} image(s)` : "1 image";
-      if (msg.files?.length > 0) return  msg.files.length > 1 ? `${msg.files.length} file(s)` : `1 file`;
-
-      return null;
-    }, [user._id, receivedMessages, sendedMessages]);
-
-    return <>{lastMessage}</>;
-  };
 
   return (
     <>
@@ -131,7 +144,7 @@ const SelectFriend = ({ setActive, activeChat, setActiveChat, setData }) => {
                       ? `${user.fullName.slice(0, 25)}...`
                       : user.fullName}
                   </h3>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-muted-foreground font-black">
                     <LastMessage
                       user={user}
                       receivedMessages={receivedMessages}

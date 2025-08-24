@@ -54,7 +54,7 @@ const ChatContainer = ({ activeChat }) => {
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [sendedMessages, activeChat]);
+  }, [sendedMessages, activeChat, receivedMessages]);
 
   return (
     <>
@@ -156,7 +156,7 @@ const ChatContainer = ({ activeChat }) => {
                         {msg.files.map((file, index) => (
                           <div
                             key={index}
-                            className="p-2 bg-muted-foreground/20 rounded-lg flex items-center justify-between gap-2"
+                            className="p-2 bg-muted-foreground/20 rounded-lg flex items-center justify-between gap-2 text-foreground"
                           >
                             <File className="size-5 text-purple-500" />
                             <p>
