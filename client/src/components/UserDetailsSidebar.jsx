@@ -337,7 +337,7 @@ const UserDetailsSidebar = ({ open, setOpen, user }) => {
                                     } flex items-center justify-between gap-2`}
                                   >
                                     <FileIcon className="size-5 text-purple-500" />
-                                    <p className="text-white">
+                                    <p>
                                       {file.fileName.length > 20
                                         ? file.fileName.slice(0, 20) + "..."
                                         : file.fileName}
