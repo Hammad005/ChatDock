@@ -1,9 +1,29 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Logo from '../assets/logo.png'
 import { Progress } from './ui/progress'
-import ModeToggle from './ModeToggle'
+import axios from '@/lib/axios'
+import { useNavigate } from 'react-router-dom'
 
 const Loading = ({progress}) => {
+  const navigate = useNavigate();
+   useEffect(() => {
+    const handleGoogleAuth = async () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+
+        if (code){
+          await axios.post("/auth/google", { code });
+          navigate("/");
+        }
+      } catch (err) {
+        console.error("Google login failed", err);
+        navigate("/");
+      }
+    };
+
+    handleGoogleAuth();
+  }, []);
   return (
     <>
     <div className='w-full h-screen flex flex-col justify-between items-center'>
