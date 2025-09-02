@@ -9,6 +9,7 @@ import ImageOverlay from "./components/ImageOverlay";
 import { useRequestStore } from "./store/useRequestStore";
 import { useChatStore } from "./store/useChatStore";
 import MediaOverlay from "./components/MediaOverlay";
+import NotFound from "./components/NotFound";
 
 const protectRoutes = (condition, children, naivagate) => {
   return condition ? children : <Navigate to={naivagate} />;
@@ -34,6 +35,7 @@ const App = () => {
   return (
     <>
       <Routes>
+        <Route path="*" element={<NotFound/>} />
         <Route path="/" element={protectRoutes(user, <Home />, "/login")} />
         <Route
           path="/login"
