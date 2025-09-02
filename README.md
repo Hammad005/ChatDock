@@ -215,6 +215,9 @@ npm install
 
 ```env
 VITE_API_URL=                    # Your backend API base URL (e.g., http://localhost:5000)
+VITE_GOOGLE_CLIENT_ID=           # Google Client Id (for google authentication)
+VITE_GOOGLE_CLIENT_SECRET=       # Google CLient Secret (for google authentication)
+VITE_GOOGLE_CALLBACK_URL=        # http://localhost:(PORT)/api/auth/google/callback (Make sure add the same url that you gave on google cloud platform)
 ```
 
 ### 3. 🧪 Run Client
